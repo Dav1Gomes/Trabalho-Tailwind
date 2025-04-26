@@ -1,0 +1,113 @@
+@page "/restaurante/{RestauranteId:int}"
+@inject NavigationManager NavigationManager
+
+<PageTitle>Restaurante</PageTitle>
+
+<div class="flex flex-col items-center mt-8">
+
+    <h1 class="text-4xl font-bold mb-6">@RestauranteSelecionado?.Nome</h1>
+
+    @if (RestauranteSelecionado != null)
+    {
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-4xl">
+            @foreach (var item in RestauranteSelecionado.Cardapio)
+            {
+                <div class="cursor-pointer bg-white p-6 rounded-xl shadow-md hover:scale-105 transition"
+                     @onclick="() => SelecionarItem(item)">
+                    <h2 class="text-2xl font-semibold">@item.Nome</h2>
+                    <p class="text-gray-600 mt-2">Nota: @item.Nota</p>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <p>Restaurante não encontrado.</p>
+    }
+
+    @if (ItemSelecionado != null)
+    {
+        <ItemModal Item="ItemSelecionado" OnClose="FecharModal" OnConfirmar="ConfirmarCompra" />
+    }
+
+    @if (CompraConfirmada)
+    {
+        <div class="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg animate-fade-out">
+            Compra Confirmada!
+        </div>
+    }
+
+</div>
+
+@code {
+    [Parameter] public int RestauranteId { get; set; }
+
+    private Restaurante RestauranteSelecionado;
+    private ItemCardapio ItemSelecionado;
+    private bool CompraConfirmada = false;
+
+    private List<Restaurante> TodosRestaurantes = new List<Restaurante>
+    {
+        new Restaurante
+        {
+            Id = 1,
+            Nome = "Restaurante 1",
+            Cardapio = new List<ItemCardapio>
+            {
+                new ItemCardapio { Nome = "Item 1.1", Nota = 4.7, TempoPreparo = 30, Preco = 25.90 },
+                new ItemCardapio { Nome = "Item 1.2", Nota = 4.5, TempoPreparo = 35, Preco = 23.90 },
+                new ItemCardapio { Nome = "Item 1.3", Nota = 4.8, TempoPreparo = 40, Preco = 27.90 },
+            }
+        },
+        new Restaurante
+        {
+            Id = 2,
+            Nome = "Restaurante 2",
+            Cardapio = new List<ItemCardapio>
+            {
+                new ItemCardapio { Nome = "Item 2.1", Nota = 4.6, TempoPreparo = 45, Preco = 49.90 },
+                new ItemCardapio { Nome = "Item 2.2", Nota = 4.4, TempoPreparo = 40, Preco = 45.90 },
+                new ItemCardapio { Nome = "Item 2.3", Nota = 4.9, TempoPreparo = 35, Preco = 52.90 },
+            }
+        }
+    };
+
+    protected override void OnInitialized()
+    {
+        RestauranteSelecionado = TodosRestaurantes.FirstOrDefault(r => r.Id == RestauranteId);
+    }
+
+    private void SelecionarItem(ItemCardapio item)
+    {
+        ItemSelecionado = item;
+    }
+
+    private void FecharModal()
+    {
+        ItemSelecionado = null;
+    }
+
+    private async Task ConfirmarCompra()
+    {
+        ItemSelecionado = null;
+        CompraConfirmada = true;
+        await Task.Delay(2000);
+        CompraConfirmada = false;
+        StateHasChanged();
+    }
+
+    public class Restaurante
+    {
+        public int Id { get; set; }
+        public string Nome { get; set; }
+        public List<ItemCardapio> Cardapio { get; set; }
+    }
+
+    public class ItemCardapio
+    {
+        public string Nome { get; set; }
+        public double Preco { get; set; }
+        public int TempoPreparo { get; set; }
+        public double Nota { get; set; }
+    }
+}

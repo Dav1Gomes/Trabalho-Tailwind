@@ -1,0 +1,42 @@
+@page "/itens-mais-vendidos"
+
+<PageTitle>Itens Mais Vendidos</PageTitle>
+
+<div class="flex flex-col items-center mt-8">
+
+    <h1 class="text-3xl font-bold mb-6">Itens Mais Vendidos 🔥</h1>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+
+        @foreach (var item in ItensMaisVendidos)
+        {
+            <div class="bg-white p-6 rounded-xl shadow-md hover:scale-105 transition">
+                <h2 class="text-2xl font-semibold">@item.Nome</h2>
+                <p class="text-gray-600 mt-2">Preço: R$ @item.Preco <!-- Pode mudar aqui depois --> </p>
+                <p class="text-gray-600">Nota: @item.Nota</p>
+                <p class="text-gray-600">Tempo de preparo: @item.TempoPreparo minutos</p>
+            </div>
+        }
+
+    </div>
+
+</div>
+
+@code {
+    private List<ItemCardapio> ItensMaisVendidos = new()
+    {
+        new ItemCardapio { Nome = "Item 1.1", Preco = 25.90, Nota = 4.7, TempoPreparo = 30 },
+        new ItemCardapio { Nome = "Item 2.1", Preco = 49.90, Nota = 4.6, TempoPreparo = 45 },
+        new ItemCardapio { Nome = "Item 3.1", Preco = 55.90, Nota = 4.8, TempoPreparo = 40 },
+        new ItemCardapio { Nome = "Item 4.1", Preco = 29.90, Nota = 4.3, TempoPreparo = 35 },
+        new ItemCardapio { Nome = "Item 5.1", Preco = 79.90, Nota = 4.9, TempoPreparo = 50 }
+    };
+
+    public class ItemCardapio
+    {
+        public string Nome { get; set; }
+        public double Preco { get; set; }
+        public double Nota { get; set; }
+        public int TempoPreparo { get; set; }
+    }
+}

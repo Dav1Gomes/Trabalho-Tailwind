@@ -1,0 +1,35 @@
+@inject NavigationManager NavigationManager
+@inject SessionService SessionService
+
+<header class="bg-red-500 text-white p-4 flex justify-between items-center shadow-md">
+    <div class="flex items-center gap-6">
+        <span class="text-2xl font-bold cursor-pointer" @onclick="() => NavigationManager.NavigateTo("/")">
+            Delivery Dos Cria (WIP)
+        </span>
+
+        <NavLink href="/" class="hover:underline">Home</NavLink>
+        <NavLink href="/todos-restaurantes" class="hover:underline">Restaurantes</NavLink>
+        <NavLink href="/itens-mais-vendidos" class="hover:underline">Itens Mais Vendidos</NavLink>
+    </div>
+
+    <div class="flex items-center gap-4">
+        @if (!SessionService.IsLoggedIn)
+        {
+            <NavLink href="/login" class="hover:underline">Login</NavLink>
+            <NavLink href="/registro" class="hover:underline">Registro</NavLink>
+        }
+        else
+        {
+            <NavLink href="/informacoes-logado" class="hover:underline">Informações</NavLink>
+            <button class="hover:underline" @onclick="Logout">Logout</button>
+        }
+    </div>
+</header>
+
+@code {
+    private void Logout()
+    {
+        SessionService.Logout();
+        NavigationManager.NavigateTo("/");
+    }
+}
