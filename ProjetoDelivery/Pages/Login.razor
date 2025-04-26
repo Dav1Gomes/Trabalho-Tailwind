@@ -1,27 +1,36 @@
 @page "/login"
 @inject NavigationManager NavigationManager
-@inject SessionService SessionService
 
-<PageTitle>Login</PageTitle>
+<div class="min-h-screen bg-white flex flex-col items-center  pt-10 p-6">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md fade-in">
+        <h1 class="text-3xl font-bold text-center text-black mb-6">Login</h1>
 
-<div class="flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-    <div class="bg-white p-8 rounded-xl shadow-md w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-6 text-center">Entrar</h1>
+        <div class="flex flex-col space-y-4">
+            <input 
+                type="email" 
+                @bind="Email" 
+                placeholder="Email" 
+                class="border-2 border-[#6836c5] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
+            />
 
-        @if (!string.IsNullOrEmpty(ErrorMessage))
-        {
-            <div class="bg-red-200 text-red-700 p-2 mb-4 rounded">
-                @ErrorMessage
-            </div>
-        }
+            <input 
+                type="password" 
+                @bind="Senha" 
+                placeholder="Senha" 
+                class="border-2 border-[#6836c5] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
+            />
 
-        <div class="flex flex-col gap-4">
-            <input type="email" class="border rounded p-2" placeholder="Email" @bind="Email" />
-            <input type="password" class="border rounded p-2" placeholder="Senha" @bind="Senha" />
-
-            <button class="bg-red-500 hover:bg-red-600 text-white py-2 rounded" @onclick="LoginUsuario">
+            <button 
+                class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded"
+                @onclick="RealizarLogin"
+            >
                 Entrar
             </button>
+
+            @if (MensagemErro != null)
+            {
+                <div class="text-red-500 text-sm text-center">@MensagemErro</div>
+            }
         </div>
     </div>
 </div>
@@ -29,18 +38,18 @@
 @code {
     private string Email { get; set; } = "";
     private string Senha { get; set; } = "";
-    private string ErrorMessage { get; set; }
+    private string? MensagemErro;
 
-    private async Task LoginUsuario()
+    private void RealizarLogin()
     {
         if (Email == "usuario@email.com" && Senha == "123")
         {
-            await SessionService.LoginAsync();
+            MainLayout.UsuarioLogado = true;
             NavigationManager.NavigateTo("/");
         }
         else
         {
-            ErrorMessage = "Email ou senha incorretos!";
+            MensagemErro = "Email ou senha incorretos.";
         }
     }
 }

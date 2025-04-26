@@ -1,35 +1,41 @@
 @inject NavigationManager NavigationManager
-@inject SessionService SessionService
 
-<header class="bg-red-500 text-white p-4 flex justify-between items-center shadow-md">
-    <div class="flex items-center gap-6">
-        <span class="text-2xl font-bold cursor-pointer" @onclick="() => NavigationManager.NavigateTo("/")">
-            Delivery Dos Cria (WIP)
-        </span>
-
-        <NavLink href="/" class="hover:underline">Home</NavLink>
-        <NavLink href="/todos-restaurantes" class="hover:underline">Restaurantes</NavLink>
-        <NavLink href="/itens-mais-vendidos" class="hover:underline">Itens Mais Vendidos</NavLink>
+<div class="flex items-center justify-between p-4 text-black bg-white">
+    <!-- Logo/Nome -->
+    <div class="cursor-pointer" @onclick="@(() => NavigationManager.NavigateTo("/"))">
+        <div class="bg-[#6836c5] text-white px-4 py-2 rounded-xl text-2xl font-bold">
+            IRango
+        </div>
     </div>
 
-    <div class="flex items-center gap-4">
-        @if (!SessionService.IsLoggedIn)
+    <!-- Menu -->
+    <div class="flex space-x-6 text-black font-bold">
+        <a class="hover:underline" href="/">Home</a>
+        <a class="hover:underline" href="/todos-restaurantes">Todos Restaurantes</a>
+        <a class="hover:underline" href="/itens-mais-vendidos">Itens Mais Vendidos</a>
+    </div>
+
+    <!-- Login / Registro ou Informações / Logout -->
+    <div class="flex space-x-4">
+        @if (!UsuarioLogado)
         {
-            <NavLink href="/login" class="hover:underline">Login</NavLink>
-            <NavLink href="/registro" class="hover:underline">Registro</NavLink>
+            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded" @onclick="@(() => NavigationManager.NavigateTo("/login"))">Login</button>
+            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded" @onclick="@(() => NavigationManager.NavigateTo("/registro"))">Registro</button>
         }
         else
         {
-            <NavLink href="/informacoes-logado" class="hover:underline">Informações</NavLink>
-            <button class="hover:underline" @onclick="Logout">Logout</button>
+            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded" @onclick="@(() => NavigationManager.NavigateTo("/informacoes-logado"))">Informações</button>
+            <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-4 rounded" @onclick="Logout">Logout</button>
         }
     </div>
-</header>
+</div>
 
 @code {
+    public static bool UsuarioLogado { get; set; } = false;
+
     private void Logout()
     {
-        SessionService.Logout();
+        UsuarioLogado = false;
         NavigationManager.NavigateTo("/");
     }
 }

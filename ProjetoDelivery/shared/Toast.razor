@@ -1,0 +1,9 @@
+@using ProjetoDelivery.Shared
+
+<div class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-down transition-all duration-500" style="z-index:9999;">
+    @Mensagem
+</div>
+
+@code {
+    [Parameter] public string Mensagem { get; set; } = string.Empty;
+}

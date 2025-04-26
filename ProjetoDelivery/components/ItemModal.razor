@@ -1,19 +1,24 @@
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-    <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-md animate-fade-in">
-        <h2 class="text-2xl font-bold mb-4">@Item.Nome</h2>
-        <p class="mb-2 text-gray-700">Preço: R$ @Item.Preco</p>
-        <p class="mb-2 text-gray-700">Tempo de preparo: @Item.TempoPreparo minutos</p>
-        <p class="mb-4 text-gray-700">Nota: @Item.Nota</p>
+@namespace ProjetoDelivery.components
 
-        <div class="flex justify-end gap-4">
-            <button class="px-4 py-2 rounded bg-gray-300 hover:bg-gray-400" @onclick="OnClose">Cancelar</button>
-            <button class="px-4 py-2 rounded bg-green-500 hover:bg-green-600 text-white" @onclick="OnConfirmar">Confirmar Compra</button>
+<div class="fixed inset-0 flex justify-center items-center backdrop-blur-md z-50">
+    <div class="bg-white p-8 rounded-xl shadow-lg w-80 fade-in flex flex-col items-center">
+        <h2 class="text-2xl font-bold text-center text-black mb-4">@Titulo</h2>
+        <p class="text-[#6836c5] text-center mb-6">@Descricao</p>
+
+        <div class="flex flex-col w-full space-y-2">
+            <button class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded" @onclick="OnConfirmar">
+                Confirmar
+            </button>
+            <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded" @onclick="OnFechar">
+                Cancelar
+            </button>
         </div>
     </div>
 </div>
 
 @code {
-    [Parameter] public ItemCardapio Item { get; set; }
-    [Parameter] public EventCallback OnClose { get; set; }
+    [Parameter] public string Titulo { get; set; } = "";
+    [Parameter] public string Descricao { get; set; } = "";
     [Parameter] public EventCallback OnConfirmar { get; set; }
+    [Parameter] public EventCallback OnFechar { get; set; }
 }
