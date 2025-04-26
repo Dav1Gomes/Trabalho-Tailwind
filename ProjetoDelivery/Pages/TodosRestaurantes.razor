@@ -1,16 +1,21 @@
 @page "/todos-restaurantes"
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-white p-6 flex flex-col items-center">
-    <h1 class="text-4xl font-bold mb-8 text-black text-center">Todos os Restaurantes</h1>
+<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white pt-24 p-6 flex flex-col items-center animate-fade-in-up">
+    <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
+        Todos os Restaurantes
+    </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-7xl">
         @foreach (var restaurante in Restaurantes)
         {
-            <div class="fade-in bg-green-200 border-2 border-[#6836c5] rounded-xl shadow-md p-6 cursor-pointer hover:scale-105 transform transition-transform duration-300" 
+            <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-green-300 hover:border-[#6836c5]"
                  @onclick="@(() => NavigationManager.NavigateTo($"/restaurante/{restaurante.Id}"))">
-                <h2 class="text-2xl font-bold text-black">@restaurante.Nome</h2>
-                <p class="text-[#6836c5] mt-2">Nota: @restaurante.Nota ⭐</p>
+                <div class="w-20 h-20 mb-4 rounded-full bg-green-200 flex items-center justify-center text-3xl text-[#6836c5] font-extrabold shadow-md">
+                    🍴
+                </div>
+                <h2 class="text-2xl font-bold text-black mb-2 text-center">@restaurante.Nome</h2>
+                <p class="text-green-600 font-semibold text-center">Nota: @restaurante.Nota ⭐</p>
             </div>
         }
     </div>

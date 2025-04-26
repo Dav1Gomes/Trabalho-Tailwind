@@ -2,41 +2,55 @@
 @using ProjetoDelivery.components
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-white p-6 flex flex-col items-center">
-    <h1 class="text-4xl font-bold mb-8 text-black text-center">Cardápio</h1>
+<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white pt-24 p-6 flex flex-col items-center animate-fade-in-up">
+    <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
+        Cardápio
+    </h1>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full max-w-5xl">
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-7xl">
         @foreach (var item in Cardapio)
         {
-            <div class="fade-in bg-green-200 border-2 border-[#6836c5] rounded-xl shadow-md p-6 cursor-pointer hover:scale-105 transform transition-transform duration-300"
+            <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-green-300 hover:border-[#6836c5]"
                  @onclick="@(() => SelecionarItem(item))">
-                <h2 class="text-2xl font-bold text-black">@item.Nome</h2>
-                <p class="text-[#6836c5] mt-2">Preço: R$ @item.Preco</p>
-                <p class="text-[#6836c5]">Tempo: @item.TempoPreparo min</p>
-                <p class="text-[#6836c5]">Nota: @item.Nota ⭐</p>
+                <div class="w-20 h-20 mb-4 rounded-full bg-green-200 flex items-center justify-center text-3xl text-[#6836c5] font-extrabold shadow-md">
+                    🍽️
+                </div>
+                <h2 class="text-2xl font-bold text-black mb-2 text-center">@item.Nome</h2>
+                <p class="text-green-600 font-semibold text-center">Preço: R$ @item.Preco</p>
+                <p class="text-green-600 font-semibold text-center">Tempo: @item.TempoPreparo min</p>
+                <p class="text-green-600 font-semibold text-center">Nota: @item.Nota ⭐</p>
             </div>
         }
     </div>
 
     @if (ItemSelecionado != null)
     {
-        <div class="fixed inset-0 flex justify-center items-center backdrop-blur-sm bg-black bg-opacity-30 z-50">
-            <div class="bg-white p-8 rounded-xl shadow-lg w-80 fade-in flex flex-col items-center">
-                <h2 class="text-2xl font-bold text-center text-black mb-4">@ItemSelecionado.Nome</h2>
-                <p class="text-[#6836c5] mb-2">Preço: R$ @ItemSelecionado.Preco</p>
-                <p class="text-[#6836c5] mb-2">Tempo de preparo: @ItemSelecionado.TempoPreparo minutos</p>
-                <p class="text-[#6836c5] mb-4">Nota: @ItemSelecionado.Nota ⭐</p>
+        <!-- Modal -->
+        <div class="fixed inset-0 flex justify-center items-center backdrop-blur-md z-50 animate-fade-in-up">
+            <div class="bg-white p-8 rounded-2xl shadow-2xl w-96 flex flex-col items-center">
+                <h2 class="text-2xl font-bold text-center text-black mb-6">@ItemSelecionado.Nome</h2>
+                <p class="text-[#6836c5] mb-2 text-center">Preço: R$ @ItemSelecionado.Preco</p>
+                <p class="text-[#6836c5] mb-2 text-center">Tempo de preparo: @ItemSelecionado.TempoPreparo minutos</p>
+                <p class="text-[#6836c5] mb-6 text-center">Nota: @ItemSelecionado.Nota ⭐</p>
 
-                <div class="flex items-center space-x-4 mb-4">
-                    <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-1 px-3 rounded-full" @onclick="DiminuirQuantidade">➖</button>
-                    <span class="text-black font-semibold text-xl">@Quantidade</span>
-                    <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-1 px-3 rounded-full" @onclick="AumentarQuantidade">➕</button>
+                <!-- Quantidade -->
+                <div class="flex items-center justify-center space-x-6 mb-6">
+                    <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full text-xl"
+                            @onclick="DiminuirQuantidade">➖</button>
+
+                    <span class="text-black font-semibold text-2xl">@Quantidade</span>
+
+                    <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full text-xl"
+                            @onclick="AumentarQuantidade">➕</button>
                 </div>
 
-                <button class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded mb-2" @onclick="ConfirmarCompra">
+                <!-- Botões Confirmar/Cancelar -->
+                <button class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-xl mb-3 transform hover:scale-105 transition-transform"
+                        @onclick="ConfirmarCompra">
                     Confirmar Compra
                 </button>
-                <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded" @onclick="@(() => ItemSelecionado = null)">
+                <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-xl transform hover:scale-105 transition-transform"
+                        @onclick="@(() => ItemSelecionado = null)">
                     Fechar
                 </button>
             </div>
@@ -45,7 +59,8 @@
 
     @if (MensagemCompra != null)
     {
-        <div class="fixed bottom-5 right-5 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-fade-in-down z-50">
+        <!-- Toast -->
+        <div class="fixed bottom-5 right-5 bg-green-500 bg-opacity-90 text-white px-6 py-3 rounded-2xl shadow-lg animate-fade-in-down z-50">
             @MensagemCompra
         </div>
     }
@@ -68,13 +83,14 @@
     private void SelecionarItem(ItemCardapio item)
     {
         ItemSelecionado = item;
-        Quantidade = 1; 
+        Quantidade = 1;
     }
 
     private async Task ConfirmarCompra()
     {
+        var itemNome = ItemSelecionado?.Nome ?? "Item";
         ItemSelecionado = null;
-        MensagemCompra = $"Compra confirmada! {Quantidade}x {ItemSelecionado?.Nome ?? "Item"}";
+        MensagemCompra = $"Compra confirmada! {Quantidade}x {itemNome}";
         StateHasChanged();
         await Task.Delay(3000);
         MensagemCompra = null;

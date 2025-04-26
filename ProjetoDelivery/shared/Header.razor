@@ -1,11 +1,9 @@
 @inject NavigationManager NavigationManager
 
-<div class="flex items-center justify-between p-4 text-black bg-white">
-    <!-- Logo/Nome -->
+<div class="flex items-center justify-between p-4 text-black bg-white bg-opacity-80 backdrop-blur-md shadow-md fixed w-full z-50">
+    <!-- Logo -->
     <div class="cursor-pointer" @onclick="@(() => NavigationManager.NavigateTo("/"))">
-        <div class="bg-[#6836c5] text-white px-4 py-2 rounded-xl text-2xl font-bold">
-            IRango
-        </div>
+        <img src="img/logo-header.png" alt="QRango Logo" class="h-17 w-50" />
     </div>
 
     <!-- Menu -->
@@ -15,27 +13,63 @@
         <a class="hover:underline" href="/itens-mais-vendidos">Itens Mais Vendidos</a>
     </div>
 
-    <!-- Login / Registro ou Informações / Logout -->
+    <!-- Botões dinâmicos -->
     <div class="flex space-x-4">
-        @if (!UsuarioLogado)
+        @if (!MainLayout.UsuarioLogado)
         {
-            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded" @onclick="@(() => NavigationManager.NavigateTo("/login"))">Login</button>
-            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded" @onclick="@(() => NavigationManager.NavigateTo("/registro"))">Registro</button>
+            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded transform hover:scale-105 transition-transform duration-300"
+                    @onclick="@(() => NavigationManager.NavigateTo("/login"))">
+                Login
+            </button>
+            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded transform hover:scale-105 transition-transform duration-300"
+                    @onclick="@(() => NavigationManager.NavigateTo("/registro"))">
+                Registro
+            </button>
         }
         else
         {
-            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded" @onclick="@(() => NavigationManager.NavigateTo("/informacoes-logado"))">Informações</button>
-            <button class="bg-red-500 hover:bg-red-600 text-white font-semibold py-1 px-4 rounded" @onclick="Logout">Logout</button>
+            <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-1 px-4 rounded transform hover:scale-105 transition-transform duration-300"
+                    @onclick="@(() => NavigationManager.NavigateTo("/informacoes-logado"))">
+                Informações
+            </button>
+            <button class="bg-[#6836c5] hover:bg-red-700 text-white font-semibold py-1 px-4 rounded transform hover:scale-105 transition-transform duration-300"
+                    @onclick="Logout">
+                Logout
+            </button>
         }
     </div>
+
+    @if (MensagemLogout != null)
+{
+    <div class="fixed bottom-5 right-5 bg-green-500 bg-opacity-90 text-white px-6 py-3 rounded-2xl shadow-lg animate-fade-in-up z-10">
+        @MensagemLogout
+    </div>
+}
+
 </div>
 
 @code {
-    public static bool UsuarioLogado { get; set; } = false;
+    private string? MensagemLogout;
 
-    private void Logout()
+    protected override void OnInitialized()
     {
-        UsuarioLogado = false;
+        MainLayout.OnUsuarioLogadoChange += AtualizarHeader;
+    }
+
+    private void AtualizarHeader()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private async void Logout()
+    {
+        MainLayout.DefinirUsuarioLogado(false);
         NavigationManager.NavigateTo("/");
+        MensagemLogout = "Você saiu com sucesso!";
+        StateHasChanged();
+        await Task.Delay(3000);
+        MensagemLogout = null;
+        StateHasChanged();
     }
 }
+

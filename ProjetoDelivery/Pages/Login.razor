@@ -1,27 +1,27 @@
 @page "/login"
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-white flex flex-col items-center  pt-10 p-6">
-    <div class="bg-white p-8 rounded-xl shadow-lg w-full max-w-md fade-in">
-        <h1 class="text-3xl font-bold text-center text-black mb-6">Login</h1>
+<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center pt-24 p-6 animate-fade-in-up">
+    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md flex flex-col items-center">
+        <h1 class="text-4xl font-bold text-center text-[#6836c5] mb-8 drop-shadow-lg">Login no QRango</h1>
 
-        <div class="flex flex-col space-y-4">
+        <div class="flex flex-col space-y-4 w-full">
             <input 
                 type="email" 
                 @bind="Email" 
                 placeholder="Email" 
-                class="border-2 border-[#6836c5] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
+                class="border-2 border-[#6836c5] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
             />
 
             <input 
                 type="password" 
                 @bind="Senha" 
                 placeholder="Senha" 
-                class="border-2 border-[#6836c5] rounded px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
+                class="border-2 border-[#6836c5] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
             />
 
             <button 
-                class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded"
+                class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded-xl transition-transform transform hover:scale-105"
                 @onclick="RealizarLogin"
             >
                 Entrar
@@ -44,7 +44,7 @@
     {
         if (Email == "usuario@email.com" && Senha == "123")
         {
-            MainLayout.UsuarioLogado = true;
+            MainLayout.DefinirUsuarioLogado(true);
             NavigationManager.NavigateTo("/");
         }
         else
