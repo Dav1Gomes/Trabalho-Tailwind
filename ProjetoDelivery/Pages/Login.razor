@@ -1,37 +1,45 @@
 @page "/login"
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center pt-24 p-6 animate-fade-in-up">
-    <div class="bg-white p-8 rounded-2xl shadow-2xl w-full max-w-md flex flex-col items-center">
-        <h1 class="text-4xl font-bold text-center text-[#6836c5] mb-8 drop-shadow-lg">Login no Boxly</h1>
+<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center justify-center pt-24 p-6 animate-fade-in-up">
+    <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
+        Login no Boxly
+    </h1>
 
-        <div class="flex flex-col space-y-4 w-full">
-            <input 
-                type="email" 
-                @bind="Email" 
-                placeholder="Email" 
-                class="border-2 border-[#6836c5] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
-            />
+    <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col items-center transform transition-transform duration-300 hover:scale-105">
+        <form class="flex flex-col w-full space-y-6" @onsubmit="RealizarLogin">
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                <input 
+                    type="email" 
+                    @bind="Email" 
+                    placeholder="Digite seu email" 
+                    class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" 
+                />
+            </div>
 
-            <input 
-                type="password" 
-                @bind="Senha" 
-                placeholder="Senha" 
-                class="border-2 border-[#6836c5] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
-            />
+            <div>
+                <label class="block text-gray-700 text-sm font-bold mb-2">Senha</label>
+                <input 
+                    type="password" 
+                    @bind="Senha" 
+                    placeholder="Digite sua senha" 
+                    class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" 
+                />
+            </div>
 
             <button 
-                class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded-xl transition-transform transform hover:scale-105"
-                @onclick="RealizarLogin"
+                type="submit"
+                class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg mt-6 transform hover:scale-105 transition-all duration-300"
             >
                 Entrar
             </button>
 
             @if (MensagemErro != null)
             {
-                <div class="text-red-500 text-sm text-center">@MensagemErro</div>
+                <div class="text-red-500 text-sm text-center mt-4">@MensagemErro</div>
             }
-        </div>
+        </form>
     </div>
 </div>
 

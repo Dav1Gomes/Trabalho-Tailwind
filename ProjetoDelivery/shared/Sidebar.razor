@@ -17,7 +17,7 @@
         </div>
 
         <div class="text-black font-semibold text-center">
-            Saldo: <span class="text-[#6836c5]">R$ 0,00</span>
+            Saldo: <span class="text-[#6836c5]">R$ 100,00</span>
         </div>
 
         <button class="flex items-center gap-2 text-black hover:text-[#6836c5]" @onclick="AdicionarSaldo">
@@ -26,11 +26,11 @@
             Adicionar Saldo
         </button>
 
-        <button class="flex items-center gap-2 text-black hover:text-[#6836c5]" @onclick="VerPedidos">
+        <button class="flex items-center gap-2 text-black hover:text-[#6836c5]" @onclick="Carrinho">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart-icon lucide-shopping-cart"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/>
                
             </svg>
-            Pedidos (0)
+            Carrinho
         </button>
 
         <button class="flex items-center gap-2 text-black hover:text-[#6836c5]" @onclick="Informacoes">
@@ -38,7 +38,7 @@
             Perfil
         </button>
 
-        <button class="flex items-center gap-2 text-black hover:text-[#6836c5]" @onclick="MostrarModalLogout">
+        <button class="flex items-center gap-2 text-black hover:text-[#FF0000]" @onclick="MostrarModalLogout">
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-log-out-icon lucide-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
             Logout
         </button>
@@ -75,8 +75,8 @@
     public void Abrir() => _isOpen = true;
     public void Fechar() => _isOpen = false;
 
-    private void AdicionarSaldo() { }
-    private void VerPedidos() { }
+    private void AdicionarSaldo() => NavigationManager.NavigateTo("/adicionar-saldo");
+    private void Carrinho() => NavigationManager.NavigateTo("/carrinho");
     private void Informacoes() => NavigationManager.NavigateTo("/informacoes-logado");
 
     private void MostrarModalLogout()
