@@ -2,26 +2,62 @@
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
     <div class="flex-grow flex flex-col items-center pt-24 p-6">
-        <h1 class="text-4xl font-bold text-center text-[#6836c5] mb-8 drop-shadow-lg">Informações de Usuário</h1>
+        <h1 class="text-4xl font-bold text-[#6836c5] mb-10 drop-shadow-lg text-center">Perfil</h1>
 
-        <div class="w-full max-w-md space-y-4">
-            <input 
-                type="text" 
-                placeholder="Endereço" 
-                class="w-full border-2 border-[#6836c5] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
-            />
+        <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl space-y-6">
+            <div class="flex flex-col items-center space-y-2">
+                <h2 class="text-2xl font-bold text-black">Fulano</h2>
+                <p class="text-[#6836c5] font-semibold text-lg">Saldo disponível: <span class="text-black">R$ 00,00</span></p>
+            </div>
 
-            <input 
-                type="text" 
-                placeholder="Número do Cartão de Crédito" 
-                class="w-full border-2 border-[#6836c5] rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
-            />
+            <hr class="border-t-2 border-[#6836c5] my-4" />
 
-            <button 
-                class="w-full bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded-xl transform hover:scale-105 transition-transform"
-            >
-                Salvar
-            </button>
+            <div>
+                <h3 class="text-xl font-bold text-black mb-4">Histórico de Pedidos</h3>
+                <ul class="space-y-2">
+                    <li class="text-black">
+                        <span class="font-semibold">BBQ Duplo</span> - Rústicos Pub - <span class="text-[#6836c5] font-bold">R$ 34,90</span>
+                    </li>
+                    <li class="text-black">
+                        <span class="font-semibold">2 Pizzas de Calabresa (Família)</span> - Sabor da Massa - <span class="text-[#6836c5] font-bold">R$ 70,00</span>
+                    </li>
+                </ul>
+            </div>
+
+            <hr class="border-t-2 border-[#6836c5] my-4" />
+
+            <!-- Dados pessoais editáveis -->
+            <div class="space-y-4">
+                <div class="flex items-center justify-between">
+                    <p class="text-black font-semibold">CEP: 12345-678</p>
+                    <button class="text-[#6836c5] hover:text-purple-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon">
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <p class="text-black font-semibold">CPF: 123.456.789-00</p>
+                    <button class="text-[#6836c5] hover:text-purple-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon">
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-between">
+                    <p class="text-black font-semibold">Cartão: **** **** **** 1234</p>
+                    <button class="text-[#6836c5] hover:text-purple-700">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon">
+                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
+                            <path d="m15 5 4 4"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
         </div>
     </div>
 

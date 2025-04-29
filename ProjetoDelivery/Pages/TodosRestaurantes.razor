@@ -1,34 +1,72 @@
 @page "/todos-restaurantes"
+@using ProjetoDelivery.Shared
 @inject NavigationManager NavigationManager
 
-<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white pt-24 p-6 flex flex-col items-center animate-fade-in-up">
-    <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
-        Todos os Restaurantes
-    </h1>
+<div class="min-h-screen bg-white flex flex-col items-center pt-24 p-6">
+    <h1 class="text-4xl font-bold mb-8 text-[#6836c5] text-center">Todos os Restaurantes</h1>
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8 w-full max-w-7xl">
-        @foreach (var restaurante in Restaurantes)
+    <!-- Barra de Pesquisa -->
+    <div class="relative w-full max-w-3xl mb-10">
+        <input 
+            type="text" 
+            placeholder="Buscar restaurantes..." 
+            @bind="Pesquisa" 
+            class="w-full pl-12 pr-4 py-3 border-2 border-[#6836c5] rounded-full focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black"
+        />
+        <div class="absolute left-4 top-1/2 transform -translate-y-1/2 text-[#6836c5]">
+            <svg xmlns="http://www.w3.org/2000/svg" class="lucide lucide-search w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+    </div>
+
+    <!-- Cards dos Restaurantes -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
+        @foreach (var restaurante in RestaurantesFiltrados)
         {
-            <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center cursor-pointer transform hover:scale-105 transition-all duration-300 border-2 border-green-300 hover:border-[#6836c5]"
+            <div class="bg-white border-2 border-[#7bf1a8] rounded-xl shadow-lg p-6 flex flex-col items-center justify-center transform transition-all hover:scale-105 hover:border-[#6836C5] duration-300 cursor-pointer"
                  @onclick="@(() => NavigationManager.NavigateTo($"/restaurante/{restaurante.Id}"))">
-                <div class="w-20 h-20 mb-4 rounded-full bg-green-200 flex items-center justify-center text-3xl text-[#6836c5] font-extrabold shadow-md">
-                    🍴
+                
+                <!-- Ícone -->
+                <div class="bg-[#bdf9d2] p-4 rounded-full mb-4 flex items-center justify-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="lucide w-8 h-8 text-[#6836c5]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 2v7c0 1.1.9 2 2 2h4a2 2 0 0 0 2-2V2" />
+                        <path d="M7 2v20" />
+                        <path d="M21 15V2a5 5 0 0 0-5 5v6c0 1.1.9 2 2 2h3Zm0 0v7" />
+                    </svg>
                 </div>
-                <h2 class="text-2xl font-bold text-black mb-2 text-center">@restaurante.Nome</h2>
-                <p class="text-green-600 font-semibold text-center">Nota: @restaurante.Nota ⭐</p>
+
+                <!-- Nome Restaurante -->
+                <h2 class="text-2xl font-bold text-black text-center">@restaurante.Nome</h2>
+
+                <!-- Nota -->
+                <p class="text-[#6836c5] mt-2 text-center">Nota: @restaurante.Nota ⭐</p>
             </div>
         }
     </div>
 </div>
 
 @code {
+    private string Pesquisa { get; set; } = "";
+
     private List<Restaurante> Restaurantes = new()
     {
-        new Restaurante { Id = 1, Nome = "BurgerTop", Nota = 4.5 },
-        new Restaurante { Id = 2, Nome = "PizzaBoom", Nota = 4.8 },
-        new Restaurante { Id = 3, Nome = "SushiMax", Nota = 4.3 },
-        new Restaurante { Id = 4, Nome = "PastaBella", Nota = 4.7 },
+        new Restaurante { Id = 1, Nome = "Rústicu's Bar Burger", Nota = 4.5 },
+        new Restaurante { Id = 2, Nome = "Gruta Burger & Beer", Nota = 4.8 },
+        new Restaurante { Id = 3, Nome = "Anão Gigante", Nota = 4.3 },
+        new Restaurante { Id = 4, Nome = "Point Nobre Pizzaria", Nota = 4.7 },
+        new Restaurante { Id = 5, Nome = "Pizzaria Giramundo", Nota = 4.1 },
+        new Restaurante { Id = 6, Nome = "Sabor da Massa", Nota = 4.6 },
+        new Restaurante { Id = 7, Nome = "Kajiki Sushi", Nota = 3.7 },
+        new Restaurante { Id = 8, Nome = "Oriente Sushi ", Nota = 5.0 },
+        new Restaurante { Id = 9, Nome = "Samurai Japanese", Nota = 2.7 },
     };
+
+    private IEnumerable<Restaurante> RestaurantesFiltrados =>
+        string.IsNullOrWhiteSpace(Pesquisa)
+        ? Restaurantes
+        : Restaurantes.Where(r => r.Nome.Contains(Pesquisa, StringComparison.OrdinalIgnoreCase));
 
     private class Restaurante
     {
