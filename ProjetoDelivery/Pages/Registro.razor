@@ -1,30 +1,33 @@
 @page "/registro"
-
+@using ProjetoDelivery.Models
+@using ProjetoDelivery.Services
+@inject NavigationManager NavigationManager
+@inject UsuarioService UsuarioService
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center justify-center pt-24 p-6 animate-fade-in-up">
     <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
         Criar Conta
     </h1>
 
     <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col items-center transform transition-transform duration-300 hover:scale-105">
-        <form class="flex flex-col w-full space-y-6" @onsubmit="ExibirMensagemAviso">
+        <form class="flex flex-col w-full space-y-6" @onsubmit="HandleRegistro">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Nome</label>
-                <input type="text" placeholder="Digite seu nome" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+                <input type="text" @bind="Nome" placeholder="Digite seu nome" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-                <input type="email" placeholder="Digite seu email" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+               <input type="email" @bind="Email" placeholder="Digite seu email" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Senha</label>
-                <input type="password" placeholder="Digite sua senha" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+                <input type="password" @bind="Senha" placeholder="Digite sua senha" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
             </div>
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Confirmar Senha</label>
-                <input type="password" placeholder="Confirme sua senha" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+                <input type="password" @bind="ConfirmarSenha" placeholder="Confirme sua senha" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
             </div>
 
             <button type="submit" class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-lg mt-6 transform hover:scale-105 transition-all duration-300">
@@ -40,10 +43,30 @@
 </div>
 
 @code {
+    private string Nome { get; set; } = "";
+    private string Email { get; set; } = "";
+    private string Senha { get; set; } = "";
+    private string ConfirmarSenha { get; set; } = "";
     private string? MensagemAviso;
 
-    private void ExibirMensagemAviso()
+    private async Task HandleRegistro()
     {
-        MensagemAviso = "Funcionalidade em desenvolvimento!";
+        if (Senha != ConfirmarSenha)
+        {
+            MensagemAviso = "As senhas não coincidem.";
+            return;
+        }
+
+        var usuario = new Usuario(0, Nome, Email, Senha);
+        var response = await UsuarioService.RegistrarAsync(usuario);
+
+        if (response.IsSuccessStatusCode)
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+        else
+        {
+            MensagemAviso = "Erro ao registrar. E-mail pode já estar em uso.";
+        }
     }
 }
