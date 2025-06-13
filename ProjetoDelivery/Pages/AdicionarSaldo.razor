@@ -1,33 +1,85 @@
 @page "/adicionar-saldo"
+@using BackendDelivery.Models
+@using ProjetoDelivery.Services
+@using ProjetoDelivery.Models
+
+@inject UsuarioService UsuarioService
 @inject NavigationManager NavigationManager
+@inject UserStateService UserState
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
     <div class="flex-grow flex flex-col items-center pt-24 px-4 sm:px-6">
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-10 drop-shadow-lg text-center">Adicionar Saldo</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-10 text-center">Adicionar Saldo</h1>
 
         <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-md space-y-6">
-            <div class="flex flex-col space-y-2">
-                <label class="text-black font-semibold">Cartão de Crédito</label>
-                <select class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black w-full">
-                    <option>**** **** **** 1234</option>
-                    <option>**** **** **** 5678</option>
-                    <option>Adicionar novo cartão...</option>
-                </select>
-            </div>
+            @if (Cartoes?.Count == 0)
+            {
+                <p class="text-red-600 font-bold text-center">Você precisa adicionar um cartão antes de adicionar saldo.</p>
+                <button class="w-full bg-[#6836c5] text-white py-2 rounded-xl mt-4"
+                        @onclick="@(() => NavigationManager.NavigateTo("/informacoes-logado"))">
+                    Ir para perfil
+                </button>
+            }
+            else
+            {
+                <div class="flex flex-col space-y-2">
+                    <label class="font-semibold">Cartão</label>
+                    <select class="border-2 border-[#6836c5] rounded-xl px-4 py-2" @bind="CartaoSelecionado">
+                        @foreach (var cartao in Cartoes)
+                        {
+                            <option value="@cartao.Id">**** **** **** @cartao.Numero[^4..]</option>
+                        }
+                    </select>
+                </div>
 
-            <div class="flex flex-col space-y-2">
-                <label class="text-black font-semibold">Valor a Adicionar</label>
-                <input type="number" class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black w-full" placeholder="R$ 0,00" />
-            </div>
+                <div class="flex flex-col space-y-2">
+                    <label class="font-semibold">Valor</label>
+                    <input type="number" @bind="Valor" class="border-2 border-[#6836c5] rounded-xl px-4 py-2" placeholder="R$ 0,00" />
+                </div>
 
-            <div class="flex flex-col space-y-2">
-                <label class="text-black font-semibold">Código</label>
-                <input type="text" class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black w-full" placeholder="Digite o código" />
-            </div>
+                <button class="w-full bg-[#6836c5] text-white font-bold py-2 rounded-xl" @onclick="RealizarAdicaoDeSaldo">
+                    Adicionar Saldo
+                </button>
 
-            <button class="w-full bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded-xl transform hover:scale-105 transition-transform">
-                Adicionar Saldo
-            </button>
+                @if (!string.IsNullOrEmpty(Mensagem))
+                {
+                    <p class="text-center text-green-600 font-semibold">@Mensagem</p>
+                }
+            }
         </div>
     </div>
 </div>
+
+@code {
+    private List<Cartao> Cartoes = new();
+    private int CartaoSelecionado;
+    private decimal Valor;
+    private string? Mensagem;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var usuarioId = UserState.UserId;
+        Cartoes = await UsuarioService.ObterCartoesAsync(usuarioId);
+    }
+
+    private async Task RealizarAdicaoDeSaldo()
+
+    {
+        if (Valor <= 0 || CartaoSelecionado == 0)
+        {
+            Mensagem = "Preencha os campos corretamente.";
+            return;
+        }
+
+        var sucesso = await UsuarioService.AdicionarSaldoAsync(UserState.UserId, Valor);
+        if (sucesso)
+        {
+            UserState.Saldo += Valor;
+            Mensagem = "Saldo adicionado com sucesso!";
+        }
+        else
+        {
+            Mensagem = "Falha ao adicionar saldo.";
+        }
+    }
+}

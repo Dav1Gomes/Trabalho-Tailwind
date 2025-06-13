@@ -1,46 +1,60 @@
 @page "/informacoes-logado"
+@inject UserService UsuarioService
 @inject UserStateService UserState
+@using ProjetoDelivery.Services
+
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
     <div class="flex-grow flex flex-col items-center pt-24 px-4 sm:px-6">
         <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-8 drop-shadow-lg text-center">Perfil</h1>
 
-        <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-6">
-            <div class="flex flex-col items-center space-y-2 text-center">
-                <h2 class="text-[#6836c5] font-bold text-xl">Olá, @UserState.UserName</h2>
-                <p class="text-[#6836c5] font-semibold text-lg">Saldo disponível: <span class="text-black">R$ 100,00</span></p>
+        <EditForm Model="_usuario" OnValidSubmit="AtualizarPerfil">
+            <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-6">
+                <div class="text-center space-y-2">
+                    <InputText class="text-[#6836c5] font-bold text-xl block w-full text-center" @bind-Value="_usuario.Nome" />
+                    <InputText class="text-[#6836c5] font-semibold text-lg block w-full text-center" @bind-Value="_usuario.Email" />
+                    <p class="text-black text-base">Saldo disponível: R$ @_usuario.Saldo.ToString("F2")</p>
+                </div>
+
+                <hr class="border-t-2 border-[#6836c5]" />
+
+                <div class="space-y-4 text-sm sm:text-base">
+                    <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
+                        <label class="text-black font-semibold w-full sm:w-auto">CEP:</label>
+                        <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_usuario.CEP" />
+                    </div>
+                    <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
+                        <label class="text-black font-semibold w-full sm:w-auto">CPF:</label>
+                        <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_usuario.CPF" />
+                    </div>
+                    <button type="submit" class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded w-full">
+                        Salvar Alterações
+                    </button>
+                </div>
             </div>
+        </EditForm>
 
-            <hr class="border-t-2 border-[#6836c5]" />
+        <div class="mt-10 bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-4">
+            <h2 class="text-xl font-bold text-black text-center">Adicionar Cartão</h2>
+            <EditForm Model="_novoCartao" OnValidSubmit="AdicionarCartao">
+                <div class="space-y-4">
+                    <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_novoCartao.Tipo" placeholder="Tipo do cartão (ex: Crédito)" />
+                    <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_novoCartao.Numero" placeholder="Número do cartão" />
+                    <button type="submit" class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded w-full">Adicionar Cartão</button>
+                </div>
+            </EditForm>
 
-            <div>
-                <h3 class="text-xl font-bold text-black mb-4">Histórico de Pedidos</h3>
-                <ul class="space-y-2 text-sm sm:text-base">
-                    <li class="text-black">
-                        <span class="font-semibold">BBQ Duplo</span> - Rústicos Pub - <span class="text-[#6836c5] font-bold">R$ 34,90</span>
-                    </li>
-                    <li class="text-black">
-                        <span class="font-semibold">2 Pizzas de Calabresa (Família)</span> - Sabor da Massa - <span class="text-[#6836c5] font-bold">R$ 70,00</span>
-                    </li>
+            @if (_usuario.Cartoes is not null && _usuario.Cartoes.Count > 0)
+            {
+                <hr class="border-t-2 border-[#6836c5]" />
+                <h3 class="text-lg font-semibold text-black">Cartões cadastrados:</h3>
+                <ul class="list-disc pl-5 text-black space-y-1">
+                    @foreach (var cartao in _usuario.Cartoes)
+                    {
+                        <li>@cartao.Tipo - **** **** **** @cartao.Numero[^4..]</li>
+                    }
                 </ul>
-            </div>
-
-            <hr class="border-t-2 border-[#6836c5]" />
-
-            <div class="space-y-4 text-sm sm:text-base">
-                <div class="flex flex-col sm:flex-row sm:justify-between">
-                    <p class="text-black font-semibold">CEP: 12345-678</p>
-                    <button class="text-[#6836c5] hover:text-purple-700 mt-2 sm:mt-0">✏️</button>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:justify-between">
-                    <p class="text-black font-semibold">CPF: 123.456.789-00</p>
-                    <button class="text-[#6836c5] hover:text-purple-700 mt-2 sm:mt-0">✏️</button>
-                </div>
-                <div class="flex flex-col sm:flex-row sm:justify-between">
-                    <p class="text-black font-semibold">Cartão: **** **** **** 1234</p>
-                    <button class="text-[#6836c5] hover:text-purple-700 mt-2 sm:mt-0">✏️</button>
-                </div>
-            </div>
+            }
         </div>
     </div>
 
@@ -48,8 +62,23 @@
 </div>
 
 @code {
-    protected override void OnInitialized()
+    private Usuario _usuario = new();
+    private Cartao _novoCartao = new();
+
+    protected override async Task OnInitializedAsync()
     {
-        UserState.OnChange += StateHasChanged;
+        _usuario = await UserState.GetUsuarioAtual();
+    }
+
+    private async Task AtualizarPerfil()
+    {
+        await UsuarioService.EditarPerfilAsync(_usuario);
+    }
+
+    private async Task AdicionarCartao()
+    {
+        await UsuarioService.AdicionarCartaoAsync(_usuario.Id, _novoCartao);
+        _usuario.Cartoes = await UsuarioService.ListarCartoesAsync(_usuario.Id);
+        _novoCartao = new();
     }
 }
