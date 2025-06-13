@@ -1,4 +1,6 @@
 @page "/informacoes-logado"
+@inject UserStateService UserState
+
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
     <div class="flex-grow flex flex-col items-center pt-24 p-6">
@@ -6,7 +8,10 @@
 
         <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl space-y-6">
             <div class="flex flex-col items-center space-y-2">
-                <h2 class="text-2xl font-bold text-black">Fulano</h2>
+                <h2 class="text-[#6836c5] font-bold text-xl text-center">
+                    Olá, @UserState.UserName
+                </h2>
+
                 <p class="text-[#6836c5] font-semibold text-lg">Saldo disponível: <span class="text-black">R$ 100,00</span></p>
             </div>
 
@@ -26,7 +31,6 @@
 
             <hr class="border-t-2 border-[#6836c5] my-4" />
 
-            <!-- Dados pessoais editáveis -->
             <div class="space-y-4">
                 <div class="flex items-center justify-between">
                     <p class="text-black font-semibold">CEP: 12345-678</p>
@@ -63,3 +67,10 @@
 
     <Footer />
 </div>
+
+@code {
+    protected override void OnInitialized()
+    {
+        UserState.OnChange += StateHasChanged;
+    }
+}

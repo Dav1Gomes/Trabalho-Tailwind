@@ -3,12 +3,16 @@
 @using ProjetoDelivery.Services
 @inject NavigationManager NavigationManager
 @inject UsuarioService UsuarioService
+@inject UserStateService UserState
+
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center justify-center pt-24 p-6 animate-fade-in-up">
     <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
         Criar Conta
     </h1>
 
     <div class="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md flex flex-col items-center transform transition-transform duration-300 hover:scale-105">
+        <Alert Message="MensagemSucesso" />
+
         <form class="flex flex-col w-full space-y-6" @onsubmit="HandleRegistro">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Nome</label>
@@ -17,7 +21,7 @@
 
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
-               <input type="email" @bind="Email" placeholder="Digite seu email" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+                <input type="email" @bind="Email" placeholder="Digite seu email" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
             </div>
 
             <div>
@@ -48,6 +52,7 @@
     private string Senha { get; set; } = "";
     private string ConfirmarSenha { get; set; } = "";
     private string? MensagemAviso;
+    private string? MensagemSucesso;
 
     private async Task HandleRegistro()
     {
@@ -62,6 +67,8 @@
 
         if (response.IsSuccessStatusCode)
         {
+            UserState.SetUser(Nome);
+            MensagemSucesso = "Cadastro realizado com sucesso!";
             NavigationManager.NavigateTo("/login");
         }
         else

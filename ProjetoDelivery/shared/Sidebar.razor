@@ -1,5 +1,6 @@
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JSRuntime
+@inject UserStateService UserState
 
 <div class="@SidebarClass">
     <div class="flex justify-end p-4">
@@ -13,7 +14,7 @@
 
     <div class="flex flex-col p-6 space-y-6">
         <div class="text-[#6836c5] font-bold text-xl text-center">
-            Olá, Fulano!
+            Olá, @UserState.UserName!
         </div>
 
         <div class="text-black font-semibold text-center">
@@ -95,5 +96,10 @@
         MostrarModal = false;
         Fechar(); 
         NavigationManager.NavigateTo("/");
+    }
+
+    protected override void OnInitialized()
+    {
+        UserState.OnChange += StateHasChanged;
     }
 }
