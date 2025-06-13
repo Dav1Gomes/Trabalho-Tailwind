@@ -1,7 +1,7 @@
 @page "/carrinho"
 
-<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center pt-24 p-6 animate-fade-in-up">
-    <h1 class="text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
+<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center pt-24 px-4 animate-fade-in-up">
+    <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] text-center mb-8 drop-shadow-lg animate-fade-in-down">
         Seu Carrinho
     </h1>
 
@@ -11,19 +11,19 @@
     }
     else
     {
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-8 w-full max-w-4xl">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-4xl">
             @foreach (var item in ItensCarrinho)
             {
-                <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center transform hover:scale-105 transition-all duration-300 border-2 border-green-300 hover:border-[#6836c5] cursor-pointer"
+                <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center transform hover:scale-105 transition-all duration-300 border-2 border-green-300 hover:border-[#6836c5] cursor-pointer"
                      @onclick="() => SelecionarParaRemover(item)">
-                    <h2 class="text-2xl font-bold text-black mb-2 text-center">@item.Nome</h2>
+                    <h2 class="text-2xl font-bold text-black mb-2">@item.Nome</h2>
                     <p class="text-green-600 font-semibold">Quantidade: @item.Quantidade</p>
                     <p class="text-sm text-gray-600">Total: R$ @(item.PrecoUnitario * item.Quantidade)</p>
                 </div>
             }
         </div>
 
-        <button class="mt-12 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-10 rounded-2xl text-lg transform hover:scale-105 transition-all duration-300"
+        <button class="mt-10 bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 sm:px-10 rounded-2xl text-lg w-full sm:w-auto transform hover:scale-105 transition-all duration-300"
                 @onclick="MostrarModal">
             Confirmar Compra
         </button>

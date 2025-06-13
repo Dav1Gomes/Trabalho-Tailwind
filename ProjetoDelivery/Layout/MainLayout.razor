@@ -3,7 +3,7 @@
 
 <Header />
 
-<main class="flex-grow p-6">
+<main class="flex-grow p-4 sm:p-6">
     @Body
 </main>
 
@@ -11,7 +11,6 @@
 
 @code {
     public static bool UsuarioLogado { get; set; } = false;
-
     public static event Action? OnUsuarioLogadoChange;
 
     public static void DefinirUsuarioLogado(bool logado)
@@ -20,4 +19,3 @@
         OnUsuarioLogadoChange?.Invoke();
     }
 }
-

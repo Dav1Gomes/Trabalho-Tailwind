@@ -1,25 +1,21 @@
 @page "/informacoes-logado"
 @inject UserStateService UserState
 
-
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
-    <div class="flex-grow flex flex-col items-center pt-24 p-6">
-        <h1 class="text-4xl font-bold text-[#6836c5] mb-10 drop-shadow-lg text-center">Perfil</h1>
+    <div class="flex-grow flex flex-col items-center pt-24 px-4 sm:px-6">
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-8 drop-shadow-lg text-center">Perfil</h1>
 
-        <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-2xl space-y-6">
-            <div class="flex flex-col items-center space-y-2">
-                <h2 class="text-[#6836c5] font-bold text-xl text-center">
-                    Olá, @UserState.UserName
-                </h2>
-
+        <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-6">
+            <div class="flex flex-col items-center space-y-2 text-center">
+                <h2 class="text-[#6836c5] font-bold text-xl">Olá, @UserState.UserName</h2>
                 <p class="text-[#6836c5] font-semibold text-lg">Saldo disponível: <span class="text-black">R$ 100,00</span></p>
             </div>
 
-            <hr class="border-t-2 border-[#6836c5] my-4" />
+            <hr class="border-t-2 border-[#6836c5]" />
 
             <div>
                 <h3 class="text-xl font-bold text-black mb-4">Histórico de Pedidos</h3>
-                <ul class="space-y-2">
+                <ul class="space-y-2 text-sm sm:text-base">
                     <li class="text-black">
                         <span class="font-semibold">BBQ Duplo</span> - Rústicos Pub - <span class="text-[#6836c5] font-bold">R$ 34,90</span>
                     </li>
@@ -29,37 +25,20 @@
                 </ul>
             </div>
 
-            <hr class="border-t-2 border-[#6836c5] my-4" />
+            <hr class="border-t-2 border-[#6836c5]" />
 
-            <div class="space-y-4">
-                <div class="flex items-center justify-between">
+            <div class="space-y-4 text-sm sm:text-base">
+                <div class="flex flex-col sm:flex-row sm:justify-between">
                     <p class="text-black font-semibold">CEP: 12345-678</p>
-                    <button class="text-[#6836c5] hover:text-purple-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon">
-                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
-                            <path d="m15 5 4 4"/>
-                        </svg>
-                    </button>
+                    <button class="text-[#6836c5] hover:text-purple-700 mt-2 sm:mt-0">✏️</button>
                 </div>
-
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row sm:justify-between">
                     <p class="text-black font-semibold">CPF: 123.456.789-00</p>
-                    <button class="text-[#6836c5] hover:text-purple-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon">
-                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
-                            <path d="m15 5 4 4"/>
-                        </svg>
-                    </button>
+                    <button class="text-[#6836c5] hover:text-purple-700 mt-2 sm:mt-0">✏️</button>
                 </div>
-
-                <div class="flex items-center justify-between">
+                <div class="flex flex-col sm:flex-row sm:justify-between">
                     <p class="text-black font-semibold">Cartão: **** **** **** 1234</p>
-                    <button class="text-[#6836c5] hover:text-purple-700">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-pencil-icon">
-                            <path d="M21.174 6.812a1 1 0 0 0-3.986-3.987L3.842 16.174a2 2 0 0 0-.5.83l-1.321 4.352a.5.5 0 0 0 .623.622l4.353-1.32a2 2 0 0 0 .83-.497z"/>
-                            <path d="m15 5 4 4"/>
-                        </svg>
-                    </button>
+                    <button class="text-[#6836c5] hover:text-purple-700 mt-2 sm:mt-0">✏️</button>
                 </div>
             </div>
         </div>

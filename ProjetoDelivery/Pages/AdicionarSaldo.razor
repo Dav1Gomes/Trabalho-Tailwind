@@ -2,13 +2,13 @@
 @inject NavigationManager NavigationManager
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
-    <div class="flex-grow flex flex-col items-center pt-24 p-6">
-        <h1 class="text-4xl font-bold text-[#6836c5] mb-10 drop-shadow-lg text-center">Adicionar Saldo</h1>
+    <div class="flex-grow flex flex-col items-center pt-24 px-4 sm:px-6">
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-10 drop-shadow-lg text-center">Adicionar Saldo</h1>
 
-        <div class="bg-white shadow-lg rounded-xl p-8 w-full max-w-md space-y-6">
+        <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-md space-y-6">
             <div class="flex flex-col space-y-2">
                 <label class="text-black font-semibold">Cartão de Crédito</label>
-                <select class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black">
+                <select class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black w-full">
                     <option>**** **** **** 1234</option>
                     <option>**** **** **** 5678</option>
                     <option>Adicionar novo cartão...</option>
@@ -17,12 +17,12 @@
 
             <div class="flex flex-col space-y-2">
                 <label class="text-black font-semibold">Valor a Adicionar</label>
-                <input type="number" class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black" placeholder="R$ 0,00" />
+                <input type="number" class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black w-full" placeholder="R$ 0,00" />
             </div>
 
             <div class="flex flex-col space-y-2">
                 <label class="text-black font-semibold">Código</label>
-                <input type="text" class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black" placeholder="Digite o código" />
+                <input type="text" class="border-2 border-[#6836c5] rounded-xl px-4 py-2 text-black w-full" placeholder="Digite o código" />
             </div>
 
             <button class="w-full bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 rounded-xl transform hover:scale-105 transition-transform">
