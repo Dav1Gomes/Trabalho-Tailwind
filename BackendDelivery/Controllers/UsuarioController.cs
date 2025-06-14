@@ -71,6 +71,7 @@ public class UsuarioController(AppDbContext context) : ControllerBase
     }
 
 
+
     [HttpGet("{id}/cartoes")]
     public async Task<IActionResult> ObterCartoes(int id)
     {

@@ -60,9 +60,18 @@ public class UsuarioService
 
     public async Task<bool> AdicionarSaldoAsync(int usuarioId, decimal valor)
     {
-        var response = await _http.PostAsJsonAsync($"http://localhost:5291/api/usuario/{usuarioId}/add-saldo", valor);
+        var response = await _http.PostAsJsonAsync($"http://localhost:5291/api/usuario/{usuarioId}/adicionar-saldo", valor);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var erro = await response.Content.ReadAsStringAsync();
+            Console.WriteLine($"[ERRO SALDO] {erro}");
+        }
+
         return response.IsSuccessStatusCode;
     }
+
+
 
     public async Task<List<Cartao>> ObterCartoesAsync(int usuarioId)
     {

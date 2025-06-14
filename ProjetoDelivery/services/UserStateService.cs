@@ -26,7 +26,7 @@ public class UserStateService
         Saldo = saldo;
         CPF = cpf;
         CEP = cep;
-        NotifyStateChanged();   
+        NotifyStateChanged();
     }
 
     public async Task<Usuario> GetUsuarioAtual()
@@ -52,5 +52,6 @@ public class UserStateService
         };
     }
 
-    private void NotifyStateChanged() => OnChange?.Invoke();
+    public void NotifyStateChanged() => OnChange?.Invoke();
+    
 }
