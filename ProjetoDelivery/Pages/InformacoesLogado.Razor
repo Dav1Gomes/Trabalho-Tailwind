@@ -1,84 +1,207 @@
 @page "/informacoes-logado"
-@inject UserService UsuarioService
+@inject UsuarioService UsuarioService
 @inject UserStateService UserState
 @using ProjetoDelivery.Services
 
-
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col animate-fade-in-up">
     <div class="flex-grow flex flex-col items-center pt-24 px-4 sm:px-6">
-        <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-8 drop-shadow-lg text-center">Perfil</h1>
+        <h1 class="text-3xl sm:text-4xl font-bold text-[#6836c5] mb-2 drop-shadow-lg text-center">
+            Perfil de @UserState.UserName!
+        </h1>
 
-        <EditForm Model="_usuario" OnValidSubmit="AtualizarPerfil">
-            <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-6">
-                <div class="text-center space-y-2">
-                    <InputText class="text-[#6836c5] font-bold text-xl block w-full text-center" @bind-Value="_usuario.Nome" />
-                    <InputText class="text-[#6836c5] font-semibold text-lg block w-full text-center" @bind-Value="_usuario.Email" />
-                    <p class="text-black text-base">Saldo disponível: R$ @_usuario.Saldo.ToString("F2")</p>
-                </div>
-
-                <hr class="border-t-2 border-[#6836c5]" />
-
-                <div class="space-y-4 text-sm sm:text-base">
-                    <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
-                        <label class="text-black font-semibold w-full sm:w-auto">CEP:</label>
-                        <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_usuario.CEP" />
-                    </div>
-                    <div class="flex flex-col sm:flex-row sm:justify-between gap-2">
-                        <label class="text-black font-semibold w-full sm:w-auto">CPF:</label>
-                        <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_usuario.CPF" />
-                    </div>
-                    <button type="submit" class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded w-full">
-                        Salvar Alterações
-                    </button>
-                </div>
+        <div class="bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-6">
+            <div class="text-center space-y-2">
+                <p class="text-[#6836c5] font-semibold text-lg text-center">@_usuario.Email</p>
+                <p class="text-black text-base">Saldo disponível: R$ @_usuario.Saldo.ToString("F2")</p>
             </div>
-        </EditForm>
+
+            <hr class="border-t-2 border-[#6836c5]" />
+
+            @if (_editando || string.IsNullOrWhiteSpace(_usuario.CPF) || string.IsNullOrWhiteSpace(_usuario.CEP))
+            {
+                <EditForm Model="_usuario" OnValidSubmit="AtualizarPerfil">
+                    <div class="flex flex-col gap-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <label class="font-semibold text-black w-full sm:w-1/3">CEP:</label>
+                            <InputText class="border border-gray-300 rounded px-3 py-2 w-full" @bind-Value="_usuario.CEP" />
+                        </div>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <label class="font-semibold text-black w-full sm:w-1/3">CPF:</label>
+                            <InputText class="border border-gray-300 rounded px-3 py-2 w-full" @bind-Value="_usuario.CPF" />
+                        </div>
+                        <button type="submit" class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded w-full">
+                            Salvar Alterações
+                        </button>
+                    </div>
+                </EditForm>
+                @if (!string.IsNullOrEmpty(mensagemPerfil))
+                {
+                    <p class="text-green-600 text-center font-semibold mt-2">@mensagemPerfil</p>
+                }
+            }
+            else
+            {
+                <div class="space-y-4 text-sm sm:text-base text-black">
+                    <div class="flex items-center justify-between">
+                        <span><strong>CEP:</strong> @_usuario.CEP</span>
+                        <button @onclick="() => _editando = true" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9" />
+                                <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span><strong>CPF:</strong> @_usuario.CPF</span>
+                        <button @onclick="() => _editando = true" title="Editar">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 20h9" />
+                                <path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
 
         <div class="mt-10 bg-white shadow-lg rounded-xl p-6 sm:p-8 w-full max-w-2xl space-y-4">
             <h2 class="text-xl font-bold text-black text-center">Adicionar Cartão</h2>
+
             <EditForm Model="_novoCartao" OnValidSubmit="AdicionarCartao">
-                <div class="space-y-4">
-                    <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_novoCartao.Tipo" placeholder="Tipo do cartão (ex: Crédito)" />
-                    <InputText class="border border-gray-300 rounded px-2 py-1 w-full" @bind-Value="_novoCartao.Numero" placeholder="Número do cartão" />
-                    <button type="submit" class="bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded w-full">Adicionar Cartão</button>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block font-semibold text-sm">Tipo</label>
+                        <InputSelect @bind-Value="_novoCartao.Tipo" class="border border-gray-300 rounded px-3 py-2 w-full">
+                            <option disabled selected value="">Selecione</option>
+                            <option value="Crédito">Crédito</option>
+                            <option value="Débito">Débito</option>
+                            <option value="Refeição">Refeição</option>
+                        </InputSelect>
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-sm">Número</label>
+                        <InputText @bind-Value="_novoCartao.Numero" placeholder="Número do cartão" class="border border-gray-300 rounded px-3 py-2 w-full" />
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-sm">Validade</label>
+                        <InputText @bind-Value="_novoCartao.Validade" placeholder="MM/AA" class="border border-gray-300 rounded px-3 py-2 w-full" />
+                    </div>
+
+                    <div>
+                        <label class="block font-semibold text-sm">CVV</label>
+                        <InputText @bind-Value="_novoCartao.CVV" placeholder="CVV" type="password" class="border border-gray-300 rounded px-3 py-2 w-full" />
+                    </div>
                 </div>
+                <button type="submit" class="mt-4 bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded w-full">
+                    Adicionar Cartão
+                </button>
             </EditForm>
+
+            @if (!string.IsNullOrEmpty(mensagemCartao))
+            {
+                <p class="text-green-600 text-center font-semibold mt-2">@mensagemCartao</p>
+            }
 
             @if (_usuario.Cartoes is not null && _usuario.Cartoes.Count > 0)
             {
                 <hr class="border-t-2 border-[#6836c5]" />
-                <h3 class="text-lg font-semibold text-black">Cartões cadastrados:</h3>
-                <ul class="list-disc pl-5 text-black space-y-1">
+                <h3 class="text-lg font-semibold text-black mt-4">Cartões cadastrados:</h3>
+                <ul class="text-black space-y-2 mt-2">
                     @foreach (var cartao in _usuario.Cartoes)
                     {
-                        <li>@cartao.Tipo - **** **** **** @cartao.Numero[^4..]</li>
+                        <li class="border border-gray-200 rounded p-3 shadow-sm bg-gray-50 flex justify-between items-center">
+                            <span><strong>@cartao.Tipo</strong></span>
+                            <span class="tracking-widest text-gray-700">**** **** **** @cartao.Numero[^4..]</span>
+                        </li>
                     }
                 </ul>
             }
         </div>
     </div>
-
-    <Footer />
 </div>
 
 @code {
     private Usuario _usuario = new();
     private Cartao _novoCartao = new();
+    private string? mensagemPerfil;
+    private string? mensagemCartao;
+    private System.Timers.Timer? _timer;
+    private bool _editando = false;
 
     protected override async Task OnInitializedAsync()
+{
+    Console.WriteLine($"[DEBUG] ID do usuário em UserState: {UserState.UserId}");
+    
+    if (UserState.UserId == 0)
     {
-        _usuario = await UserState.GetUsuarioAtual();
+        mensagemCartao = "ID do usuário não carregado.";
+        return;
     }
 
+    var usuarioCompleto = await UsuarioService.BuscarPorIdAsync(UserState.UserId);
+    if (usuarioCompleto is not null)
+    {
+        _usuario = usuarioCompleto;
+        _usuario.Cartoes = await UsuarioService.ListarCartoesAsync(_usuario.Id);
+    }
+}
     private async Task AtualizarPerfil()
     {
-        await UsuarioService.EditarPerfilAsync(_usuario);
+        var resposta = await UsuarioService.AtualizarCepCpfAsync(_usuario.Id, _usuario.CPF, _usuario.CEP);
+
+        if (resposta.IsSuccessStatusCode)
+        {
+            mensagemPerfil = "Alterações feitas!";
+            _editando = false;
+        }
+        else
+        {
+            var erro = await resposta.Content.ReadAsStringAsync();
+            mensagemPerfil = $"Erro ao atualizar: {erro}";
+        }
+
+        IniciarTimer(() => mensagemPerfil = null);
     }
+
+
 
     private async Task AdicionarCartao()
     {
-        await UsuarioService.AdicionarCartaoAsync(_usuario.Id, _novoCartao);
-        _usuario.Cartoes = await UsuarioService.ListarCartoesAsync(_usuario.Id);
-        _novoCartao = new();
+        Console.WriteLine($"[DEBUG] Enviando cartão para o usuário ID: {_usuario.Id}");
+
+        var resposta = await UsuarioService.AdicionarCartaoAsync(_usuario.Id, _novoCartao);
+
+        if (resposta.IsSuccessStatusCode)
+        {
+            _usuario.Cartoes = await UsuarioService.ListarCartoesAsync(_usuario.Id);
+            _novoCartao = new();
+            mensagemCartao = "Cartão adicionado com sucesso!";
+        }
+        else
+        {
+            var erro = await resposta.Content.ReadAsStringAsync();
+            mensagemCartao = $"Erro ao adicionar cartão: {erro}";
+        }
+
+        IniciarTimer(() => mensagemCartao = null);
+    }
+
+
+
+
+    private void IniciarTimer(Action acao)
+    {
+        _timer?.Dispose();
+        _timer = new System.Timers.Timer(3000);
+        _timer.Elapsed += (s, e) =>
+        {
+            acao.Invoke();
+            _timer?.Dispose();
+            InvokeAsync(StateHasChanged);
+        };
+        _timer.AutoReset = false;
+        _timer.Start();
     }
 }

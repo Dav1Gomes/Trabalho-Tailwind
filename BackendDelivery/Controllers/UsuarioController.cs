@@ -43,18 +43,29 @@ public class UsuarioController(AppDbContext context) : ControllerBase
         return Ok(usuario);
     }
 
+    [HttpGet("{id}")]
+    public async Task<IActionResult> BuscarUsuario(int id)
+    {
+        var usuario = await context.Usuarios.FindAsync(id);
+        if (usuario == null)
+            return NotFound("Usuário não encontrado.");
+
+        return Ok(usuario);
+    }
+
+
     [HttpPost("{id}/adicionar-saldo")]
     public async Task<IActionResult> AdicionarSaldo(int id, [FromBody] decimal valor)
     {
         if (valor <= 0)
             return BadRequest("Valor inválido.");
 
-        var usuario = await _context.Usuarios.FindAsync(id);
+        var usuario = await context.Usuarios.FindAsync(id);
         if (usuario == null)
             return NotFound("Usuário não encontrado.");
 
         usuario.Saldo += valor;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
 
         return Ok(new { mensagem = "Saldo adicionado com sucesso", saldoAtual = usuario.Saldo });
     }
@@ -63,7 +74,7 @@ public class UsuarioController(AppDbContext context) : ControllerBase
     [HttpGet("{id}/cartoes")]
     public async Task<IActionResult> ObterCartoes(int id)
     {
-        var usuario = await _context.Usuarios
+        var usuario = await context.Usuarios
             .Include(u => u.Cartoes)
             .FirstOrDefaultAsync(u => u.Id == id);
 
@@ -72,6 +83,54 @@ public class UsuarioController(AppDbContext context) : ControllerBase
 
         return Ok(usuario.Cartoes);
     }
+
+    [HttpPut("editar/{id}")]
+    public async Task<IActionResult> EditarUsuario(int id, [FromBody] AtualizarCepCpfDTO dados)
+    {
+        var usuario = await context.Usuarios.FindAsync(id);
+        if (usuario == null)
+            return NotFound("Usuário não encontrado.");
+
+        usuario.CPF = dados.CPF;
+        usuario.CEP = dados.CEP;
+
+        var result = await context.SaveChangesAsync();
+        return result > 0 ? Ok(usuario) : BadRequest("Nada foi alterado.");
+    }
+
+
+
+   [HttpPost("{id}/cartoes")]
+    public async Task<IActionResult> AdicionarCartao(int id, [FromBody] Cartao novoCartao)
+    {
+        if (string.IsNullOrWhiteSpace(novoCartao.Numero) ||
+            string.IsNullOrWhiteSpace(novoCartao.CVV) ||
+            string.IsNullOrWhiteSpace(novoCartao.Validade) ||
+            string.IsNullOrWhiteSpace(novoCartao.Tipo))
+        {
+            return BadRequest("Todos os campos do cartão são obrigatórios.");
+        }
+
+        var usuario = await context.Usuarios.Include(u => u.Cartoes).FirstOrDefaultAsync(u => u.Id == id);
+        if (usuario == null)
+            return NotFound("Usuário não encontrado.");
+
+        novoCartao.UsuarioId = id;
+
+        try
+        {
+            context.Cartoes.Add(novoCartao);
+            await context.SaveChangesAsync();
+            return Ok(novoCartao);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest($"Erro ao salvar no banco: {ex.Message}");
+        }
+    }
+
+
+
 
 
 

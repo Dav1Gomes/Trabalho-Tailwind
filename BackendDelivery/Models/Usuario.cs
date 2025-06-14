@@ -24,7 +24,7 @@ public class Usuario
 
     public string CEP { get; set; } = string.Empty;
 
-    public List<Cartao>? Cartoes { get; set; }
+    public List<Cartao> Cartoes { get; set; } = new();
 
     public List<Carrinho>? Carrinho { get; set; }
 }

@@ -7,5 +7,7 @@ public class Cartao
     public string Validade { get; set; } = string.Empty;
     public string CVV { get; set; } = string.Empty;
     public int UsuarioId { get; set; }
+    public string Tipo { get; set; } = string.Empty;
+
 }
 

@@ -5,14 +5,13 @@
 @inject UsuarioService UsuarioService
 @inject UserStateService UserState
 
+
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center justify-center pt-24 px-4 sm:px-6 animate-fade-in-up">
     <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] text-center mb-12 drop-shadow-lg animate-fade-in-down">
         Criar Conta
     </h1>
 
     <div class="bg-white rounded-2xl shadow-2xl p-6 sm:p-8 w-full max-w-md flex flex-col items-center transform transition-transform duration-300 hover:scale-105">
-        <Alert Message="MensagemSucesso" />
-
         <form class="flex flex-col w-full space-y-6" @onsubmit="HandleRegistro">
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Nome</label>
@@ -22,6 +21,17 @@
             <div>
                 <label class="block text-gray-700 text-sm font-bold mb-2">Email</label>
                 <input type="email" @bind="Email" placeholder="Digite seu email" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+            </div>
+
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="w-full sm:w-1/2">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">CPF</label>
+                    <input type="text" @bind="CPF" placeholder="000.000.000-00" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+                </div>
+                <div class="w-full sm:w-1/2">
+                    <label class="block text-gray-700 text-sm font-bold mb-2">CEP</label>
+                    <input type="text" @bind="CEP" placeholder="00000-000" class="border-2 border-[#6836c5] rounded-lg w-full p-3 focus:outline-none focus:ring-2 focus:ring-[#6836c5] text-black" />
+                </div>
             </div>
 
             <div>
@@ -51,8 +61,9 @@
     private string Email { get; set; } = "";
     private string Senha { get; set; } = "";
     private string ConfirmarSenha { get; set; } = "";
+    private string CPF { get; set; } = "";
+    private string CEP { get; set; } = "";
     private string? MensagemAviso;
-    private string? MensagemSucesso;
 
     private async Task HandleRegistro()
     {
@@ -62,18 +73,37 @@
             return;
         }
 
-        var usuario = new Usuario(0, Nome, Email, Senha);
+        if (string.IsNullOrWhiteSpace(CPF) || string.IsNullOrWhiteSpace(CEP))
+        {
+            MensagemAviso = "CPF e CEP são obrigatórios.";
+            return;
+        }
+
+        var usuario = new Usuario
+        {
+            Nome = Nome,
+            Email = Email,
+            Senha = Senha,
+            Saldo = 0,
+            CPF = CPF,
+            CEP = CEP
+        };
+
         var response = await UsuarioService.RegistrarAsync(usuario);
 
         if (response.IsSuccessStatusCode)
         {
-            UserState.SetUser(Nome);
-            MensagemSucesso = "Cadastro realizado com sucesso!";
-            NavigationManager.NavigateTo("/login");
+            var usuarioRegistrado = await response.Content.ReadFromJsonAsync<Usuario>();
+            UserState.SetUser(usuarioRegistrado!.Id, usuarioRegistrado.Nome, usuarioRegistrado.Saldo, usuarioRegistrado.CPF, usuarioRegistrado.CEP);
+
+            MainLayout.DefinirUsuarioLogado(true);
+
+            NavigationManager.NavigateTo("/");
         }
         else
         {
             MensagemAviso = "Erro ao registrar. E-mail pode já estar em uso.";
         }
     }
+
 }

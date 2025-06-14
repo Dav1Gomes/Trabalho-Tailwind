@@ -1,6 +1,5 @@
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using BackendDelivery.Models;
 using ProjetoDelivery.Models;
 
 namespace ProjetoDelivery.Services;
@@ -16,8 +15,16 @@ public class UsuarioService
 
     public async Task<HttpResponseMessage> RegistrarAsync(Usuario usuario)
     {
-        return await _http.PostAsJsonAsync("http://localhost:5291/api/usuario/registro", usuario);
+        return await _http.PostAsJsonAsync("http://localhost:5291/api/usuario/registro", new
+        {
+            usuario.Nome,
+            usuario.Email,
+            usuario.Senha,
+            usuario.CPF,
+            usuario.CEP
+        });
     }
+
 
     public async Task<HttpResponseMessage> LoginAsync(LoginRequest login)
     {
@@ -26,12 +33,19 @@ public class UsuarioService
 
     public async Task<Usuario?> BuscarPorIdAsync(int id)
     {
+        Console.WriteLine($"[DEBUG] Buscando usuário ID: {id}");
         return await _http.GetFromJsonAsync<Usuario>($"http://localhost:5291/api/usuario/{id}");
     }
+
 
     public async Task<HttpResponseMessage> EditarUsuarioAsync(int id, Usuario usuario)
     {
         return await _http.PutAsJsonAsync($"http://localhost:5291/api/usuario/editar/{id}", usuario);
+    }
+
+    public async Task<HttpResponseMessage> EditarPerfilAsync(Usuario usuario)
+    {
+        return await _http.PutAsJsonAsync($"http://localhost:5291/api/usuario/editar/{usuario.Id}", usuario);
     }
 
     public async Task<List<Cartao>?> ListarCartoesAsync(int id)
@@ -56,6 +70,17 @@ public class UsuarioService
         return response ?? new List<Cartao>();
     }
 
+    public async Task<HttpResponseMessage> AtualizarCepCpfAsync(int id, string cpf, string cep)
+    {
+        var dados = new
+        {
+            CPF = cpf,
+            CEP = cep
+        };
+        return await _http.PutAsJsonAsync($"http://localhost:5291/api/usuario/editar/{id}", dados);
+    }
 
+
+    
 
 }
