@@ -1,4 +1,7 @@
 ﻿@page "/"
+@using ProjetoDelivery.Models
+@using ProjetoDelivery.Services
+@inject RestauranteService RestauranteService
 @inject NavigationManager NavigationManager
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center pt-24 px-4 animate-fade-in-up">
@@ -30,33 +33,14 @@
     </div>
 </div>
 
-
 @code {
-    private List<Restaurante> Restaurantes = new()
-    {
-        new Restaurante { Id = 1, Nome = "McDonald's", Nota = 4.5 },
-        new Restaurante { Id = 2, Nome = "Digão Lanches", Nota = 4.8 },
-        new Restaurante { Id = 3, Nome = "Burger King", Nota = 4.3 },
-        new Restaurante { Id = 4, Nome = "Point Nobre Pizzaria", Nota = 4.7 },
-        new Restaurante { Id = 5, Nome = "Pizzaria Giramundo", Nota = 4.1 },
-        new Restaurante { Id = 6, Nome = "Sabor da Massa", Nota = 4.6 },
-        new Restaurante { Id = 7, Nome = "Kajiki Sushi", Nota = 3.7 },
-        new Restaurante { Id = 8, Nome = "Oriente Sushi ", Nota = 5.0 },
-        new Restaurante { Id = 9, Nome = "Samurai Japanese", Nota = 2.7 },
-    };
-
+    private List<Restaurante> Restaurantes = new();
     private List<Restaurante> RestaurantesAleatorios = new();
-
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
+        Restaurantes = await RestauranteService.ListarTodosAsync();
         var random = new Random();
         RestaurantesAleatorios = Restaurantes.OrderBy(x => random.Next()).Take(4).ToList();
     }
-
-    private class Restaurante
-    {
-        public int Id { get; set; }
-        public string Nome { get; set; } = string.Empty;
-        public double Nota { get; set; }
-    }
 }
+

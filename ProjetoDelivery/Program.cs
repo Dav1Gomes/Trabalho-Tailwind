@@ -15,6 +15,8 @@ builder.Services.AddScoped(sp => new HttpClient
 builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<UserStateService>();
+builder.Services.AddScoped<RestauranteService>();
+
 
 await builder.Build().RunAsync();
 

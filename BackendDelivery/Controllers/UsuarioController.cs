@@ -129,10 +129,4 @@ public class UsuarioController(AppDbContext context) : ControllerBase
             return BadRequest($"Erro ao salvar no banco: {ex.Message}");
         }
     }
-
-
-
-
-
-
 }

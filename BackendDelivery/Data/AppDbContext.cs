@@ -9,6 +9,7 @@ public class AppDbContext : DbContext
 
     public DbSet<Usuario> Usuarios => Set<Usuario>();
     public DbSet<Cartao> Cartoes => Set<Cartao>();
-    public DbSet<Carrinho> Carrinhos => Set<Carrinho>();
-    
+    public DbSet<Restaurante> Restaurantes { get; set; }
+    public DbSet<Alimento> Alimentos { get; set; }
+    public DbSet<Carrinho> Carrinhos { get; set; }
 }
