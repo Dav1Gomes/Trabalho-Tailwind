@@ -26,4 +26,19 @@ public class RestauranteController(AppDbContext context) : ControllerBase
 
         return restaurante is null ? NotFound() : Ok(restaurante);
     }
+
+    [HttpGet("{id}/cardapio")]
+    public async Task<ActionResult<List<Alimento>>> GetCardapio(int id)
+    {
+        var restaurante = await context.Restaurantes
+            .Include(r => r.Alimentos)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (restaurante == null)
+            return NotFound();
+
+        return restaurante.Alimentos;
+    }
+
+
 }
