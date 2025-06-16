@@ -30,27 +30,30 @@ public class UserStateService
     }
 
     public async Task<Usuario> GetUsuarioAtual()
+{
+    var usuario = await _usuarioService.BuscarPorIdAsync(UserId);
+
+    if (usuario is not null)
     {
-        var usuario = await _usuarioService.BuscarPorIdAsync(UserId);
+        UserName = usuario.Nome;
+        Saldo = usuario.Saldo;
+        CPF = usuario.CPF;
+        CEP = usuario.CEP;
 
-        if (usuario is not null)
-        {
-            UserName = usuario.Nome;
-            Saldo = usuario.Saldo;
-            CPF = usuario.CPF;
-            CEP = usuario.CEP;
-            return usuario;
-        }
-
-        return new Usuario
-        {
-            Id = UserId,
-            Nome = UserName,
-            Saldo = Saldo,
-            CPF = CPF,
-            CEP = CEP
-        };
+        NotifyStateChanged(); 
+        return usuario;
     }
+
+    return new Usuario
+    {
+        Id = UserId,
+        Nome = UserName,
+        Saldo = Saldo,
+        CPF = CPF,
+        CEP = CEP
+    };
+}
+
 
     public void NotifyStateChanged() => OnChange?.Invoke();
     

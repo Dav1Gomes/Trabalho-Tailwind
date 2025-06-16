@@ -12,4 +12,7 @@ public class AppDbContext : DbContext
     public DbSet<Restaurante> Restaurantes { get; set; }
     public DbSet<Alimento> Alimentos { get; set; }
     public DbSet<Carrinho> Carrinhos { get; set; }
+    public DbSet<CarrinhoHistorico> HistoricoCompras { get; set; }
+
+
 }

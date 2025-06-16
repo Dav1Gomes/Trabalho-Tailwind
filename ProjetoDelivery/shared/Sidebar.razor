@@ -20,7 +20,7 @@
         </div>
 
         <div class="text-black font-semibold text-center">
-            Saldo: <span class="text-[#6836c5]">R$ @UserState.Saldo.ToString("F2")</span>
+            Saldo: <span class="text-[#6836c5]">R$ @UserState.Saldo.ToString("F2", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))</span>
         </div>
 
 
@@ -95,11 +95,18 @@
 
     private void ConfirmarLogout()
     {
-        MainLayout.DefinirUsuarioLogado(false);
+        UserState.SetUser(0, "", 0, "", "");
+        UserState.NotifyStateChanged();
+
         MostrarModal = false;
-        Fechar(); 
+        Fechar();
+
+        MainLayout.DefinirUsuarioLogado(false); 
         NavigationManager.NavigateTo("/");
     }
+
+
+
 
     protected override void OnInitialized()
     {

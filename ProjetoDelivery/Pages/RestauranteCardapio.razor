@@ -3,6 +3,7 @@
 @using ProjetoDelivery.Services
 @inject RestauranteService RestauranteService
 @inject UserStateService UserState
+@inject CarrinhoService CarrinhoService
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white pt-24 px-4 sm:px-6 flex flex-col items-center animate-fade-in-up">
     <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] text-center mb-10 drop-shadow-lg animate-fade-in-down">
@@ -85,14 +86,31 @@
 
     private async Task ConfirmarCompra()
     {
-        var nome = ItemSelecionado?.Nome ?? "Item";
-        MensagemCompra = $"Compra confirmada! {Quantidade}x {nome}";
-        ItemSelecionado = null;
+        if (ItemSelecionado is null || UserState.UserId == 0)
+        {
+            MensagemCompra = "Você precisa estar logado para adicionar ao carrinho!";
+            StateHasChanged();
+            await Task.Delay(3000);
+            MensagemCompra = null;
+            StateHasChanged();
+            return;
+        }
+
+        var sucesso = await CarrinhoService.AdicionarAoCarrinhoAsync(UserState.UserId, ItemSelecionado.Id, Quantidade);
+
+        MensagemCompra = sucesso ? "Item adicionado ao carrinho!" : "Erro ao adicionar item.";
+
+        if (sucesso)
+        {
+            ItemSelecionado = null;
+        }
+
         StateHasChanged();
         await Task.Delay(3000);
         MensagemCompra = null;
         StateHasChanged();
     }
+
 
     private void AumentarQuantidade() => Quantidade++;
     private void DiminuirQuantidade() { if (Quantidade > 1) Quantidade--; }

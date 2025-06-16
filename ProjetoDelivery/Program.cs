@@ -16,6 +16,7 @@ builder.Services.AddScoped<SessionService>();
 builder.Services.AddScoped<UsuarioService>();
 builder.Services.AddScoped<UserStateService>();
 builder.Services.AddScoped<RestauranteService>();
+builder.Services.AddScoped<CarrinhoService>();
 
 
 await builder.Build().RunAsync();
