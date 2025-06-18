@@ -131,15 +131,39 @@
 
     private async Task RemoverUnidade(ItemCarrinhoModel item)
     {
-        await CarrinhoService.RemoverItemAsync(item.Id);
-        item.Quantidade--;
-        if (item.Quantidade <= 0)
+        var (sucesso, novaQuantidade, _) = await CarrinhoService.ComprarAsync(
+            UserState.UserId,
+            item.AlimentoId,
+            -1
+        );
+
+        if (!sucesso)
+            return;
+
+        if (novaQuantidade > 0)
+        {
+            item.Quantidade = novaQuantidade;
+        }
+        else
+        {
             ItensCarrinho.Remove(item);
+        }
+
+        StateHasChanged();
     }
 
     private async Task AdicionarUnidade(ItemCarrinhoModel item)
     {
-        await CarrinhoService.ComprarAsync(UserState.UserId, item.AlimentoId, 1);
-        item.Quantidade++;
+        var (sucesso, novaQuantidade, _) = await CarrinhoService.ComprarAsync(
+            UserState.UserId,
+            item.AlimentoId,
+            1
+        );
+
+        if (!sucesso)
+            return;
+
+        item.Quantidade = novaQuantidade;
+        StateHasChanged();
     }
 }

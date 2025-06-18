@@ -19,35 +19,46 @@ public class CarrinhoController : ControllerBase
     }
 
     [HttpPost("comprar")]
-    public async Task<IActionResult> Comprar([FromBody] CompraRequestDTO compra)
-    {
-        var usuario = await _context.Usuarios.FindAsync(compra.UsuarioId);
-        var alimento = await _context.Alimentos.FindAsync(compra.AlimentoId);
-
-        if (usuario is null || alimento is null)
-            return NotFound("Usuário ou alimento não encontrado.");
-
-        var total = alimento.Preco * compra.Quantidade;
-
-        if (usuario.Saldo < total)
-            return BadRequest("Saldo insuficiente.");
-
-        usuario.Saldo -= total;
-
-        var item = new Carrinho
+        public async Task<IActionResult> Comprar([FromBody] CompraRequestDTO compra)
         {
-            UsuarioId = compra.UsuarioId,
-            AlimentoId = compra.AlimentoId,
-            Quantidade = compra.Quantidade,
-            Total = total
-        };
+            var usuario = await _context.Usuarios.FindAsync(compra.UsuarioId);
+            var alimento = await _context.Alimentos.FindAsync(compra.AlimentoId);
 
-        _context.Carrinhos.Add(item);
-        _context.Usuarios.Update(usuario);
-        await _context.SaveChangesAsync();
+            if (usuario is null || alimento is null)
+                return NotFound("Usuário ou alimento não encontrado.");
 
-        return Ok(new { novaSaldo = usuario.Saldo, mensagem = "Compra realizada com sucesso!" });
-    }
+            var itemExistente = await _context.Carrinhos
+                .FirstOrDefaultAsync(c =>
+                    c.UsuarioId   == compra.UsuarioId &&
+                    c.AlimentoId  == compra.AlimentoId);
+
+            if (itemExistente != null)
+            {
+                itemExistente.Quantidade += compra.Quantidade;
+                itemExistente.Total      = itemExistente.Quantidade * alimento.Preco;
+                _context.Carrinhos.Update(itemExistente);
+            }
+            else
+            {
+                var novoItem = new Carrinho
+                {
+                    UsuarioId  = compra.UsuarioId,
+                    AlimentoId = compra.AlimentoId,
+                    Quantidade = compra.Quantidade,
+                    Total      = compra.Quantidade * alimento.Preco
+                };
+                _context.Carrinhos.Add(novoItem);
+                itemExistente = novoItem; 
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                QuantidadeConsolidada = itemExistente.Quantidade,
+                TotalProItem          = itemExistente.Total
+            });
+        }
 
     [HttpGet("historico/{usuarioId}")]
     public async Task<ActionResult<List<CarrinhoHistorico>>> Historico(int usuarioId)

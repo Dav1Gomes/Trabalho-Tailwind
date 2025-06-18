@@ -13,25 +13,27 @@ public class CarrinhoService
         _http = http;
     }
 
-    public async Task<(bool sucesso, string mensagem, decimal novoSaldo)> ComprarAsync(int usuarioId, int alimentoId, int quantidade)
+    public async Task<(bool sucesso, int quantidade, decimal total)> ComprarAsync(int usuarioId, int alimentoId, int quantidade)
+{
+    var dto = new
     {
-        var dto = new
-        {
-            UsuarioId = usuarioId,
-            AlimentoId = alimentoId,
-            Quantidade = quantidade
-        };
+        UsuarioId  = usuarioId,
+        AlimentoId = alimentoId,
+        Quantidade = quantidade
+    };
 
-        var response = await _http.PostAsJsonAsync("http://localhost:5291/api/carrinho/comprar", dto);
+    var response = await _http.PostAsJsonAsync("http://localhost:5291/api/carrinho/comprar", dto);
+    if (!response.IsSuccessStatusCode)
+        return (false, 0, 0);
 
-        if (response.IsSuccessStatusCode)
-        {
-            var resultado = await response.Content.ReadFromJsonAsync<CompraResposta>();
-            return (true, resultado?.Mensagem ?? "Compra realizada", resultado?.NovoSaldo ?? 0);
-        }
+    var result = await response.Content.ReadFromJsonAsync<MergeResponse>();
+    return (true, result?.QuantidadeConsolidada ?? 0, result?.TotalProItem ?? 0);
+}
 
-        var erro = await response.Content.ReadAsStringAsync();
-        return (false, erro, 0);
+    private class MergeResponse
+    {
+        public int QuantidadeConsolidada { get; set; }
+        public decimal TotalProItem { get; set; }
     }
 
     private class CompraResposta
@@ -53,14 +55,15 @@ public class CarrinhoService
     }
 
     public async Task<(bool sucesso, string mensagem, decimal novoSaldo)> FinalizarCarrinhoAsync(int usuarioId)
-    {
-        var response = await _http.PostAsync($"http://localhost:5291/api/carrinho/{usuarioId}/comprar", null);
-        if (!response.IsSuccessStatusCode)
-            return (false, "Erro ao finalizar", 0);
+{
+    var response = await _http.PostAsync($"http://localhost:5291/api/carrinho/{usuarioId}/comprar", null);
+    if (!response.IsSuccessStatusCode)
+        return (false, "Erro ao finalizar", 0);
 
-        var novoSaldo = decimal.Parse(await response.Content.ReadAsStringAsync());
-        return (true, "Compra confirmada!", novoSaldo);
-    }
+    var novoSaldo = await response.Content.ReadFromJsonAsync<decimal>();
+
+    return (true, "Compra confirmada!", novoSaldo);
+}
 
     public async Task<bool> AdicionarAoCarrinhoAsync(int usuarioId, int alimentoId, int quantidade)
     {

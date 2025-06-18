@@ -96,13 +96,20 @@
             return;
         }
 
-        var sucesso = await CarrinhoService.AdicionarAoCarrinhoAsync(UserState.UserId, ItemSelecionado.Id, Quantidade);
-
-        MensagemCompra = sucesso ? "Item adicionado ao carrinho!" : "Erro ao adicionar item.";
+        var (sucesso, novaQuantidade, total) = await CarrinhoService.ComprarAsync(
+            UserState.UserId,
+            ItemSelecionado.Id,
+            Quantidade
+        );
 
         if (sucesso)
         {
-            ItemSelecionado = null;
+            MensagemCompra = $"No carrinho: {novaQuantidade} unidades (R$ {total:N2})";
+            ItemSelecionado = null;  
+        }
+        else
+        {
+            MensagemCompra = "Erro ao adicionar item.";
         }
 
         StateHasChanged();
@@ -110,7 +117,6 @@
         MensagemCompra = null;
         StateHasChanged();
     }
-
 
     private void AumentarQuantidade() => Quantidade++;
     private void DiminuirQuantidade() { if (Quantidade > 1) Quantidade--; }
