@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization; 
 
 namespace BackendDelivery.Models;
 
@@ -17,5 +18,6 @@ public class Restaurante
 
     public double Nota { get; set; }
 
+    [JsonIgnore]    
     public List<Alimento> Alimentos { get; set; } = new();
 }

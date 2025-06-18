@@ -1,40 +1,67 @@
 @page "/historico-compras"
-@using ProjetoDelivery.Models
-@using ProjetoDelivery.Services
-@inject CarrinhoService CarrinhoService
-@inject UserStateService UserState
 @layout MainLayout
 
-<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white pt-24 px-4 sm:px-6 flex flex-col items-center animate-fade-in-up">
-    <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] text-center mb-10 drop-shadow-lg animate-fade-in-down">
-        Histórico de Compras
-    </h1>
+@using System.Globalization
+@using ProjetoDelivery.Models
+@using ProjetoDelivery.Services
 
-    @if (Historico.Count == 0)
-    {
-        <p class="text-black text-lg text-center mt-10">Você ainda não realizou nenhuma compra.</p>
-    }
-    else
-    {
-        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-6xl">
-            @foreach (var item in Historico)
-            {
-                <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center border-2 border-green-300 hover:border-[#6836c5] transition-transform hover:scale-105">
-                    <h2 class="text-xl font-bold text-black mb-2">@item.Alimento?.Nome</h2>
-                    <p class="text-green-600 font-medium">Quantidade: @item.Quantidade</p>
-                    <p class="text-green-600">Preço Total: R$ @item.Total.ToString("F2", System.Globalization.CultureInfo.GetCultureInfo("pt-BR"))</p>
-                    <p class="text-sm text-gray-500">@item.DataCompra.ToString("dd/MM/yyyy HH:mm")</p>
-                </div>
-            }
-        </div>
-    }
+@inject CarrinhoService CarrinhoService
+@inject UserStateService UserState
+
+<div class="pt-20 px-4 sm:px-6 md:px-8">
+  <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-6">
+    Histórico de Compras
+  </h1>
+
+  @if (historico is null)
+  {
+    <p class="text-gray-500">Carregando histórico...</p>
+  }
+  else if (!historico.Any())
+  {
+    <p class="text-gray-500">Nenhuma compra encontrada.</p>
+  }
+  else
+  {
+    <ul class="space-y-4">
+      @foreach (var compra in historico.OrderByDescending(c => c.DataCompra))
+      {
+        <li class="bg-white shadow-sm rounded-lg p-4 flex flex-col sm:flex-row justify-between items-start sm:items-center">
+          <div class="flex-1">
+            <p class="font-semibold text-lg">@compra.Alimento?.Nome</p>
+            <p class="text-sm text-gray-600">
+              Restaurante: @compra.Alimento?.Restaurante?.Nome
+            </p>
+            <p class="mt-1 text-sm text-gray-700">
+              Quantidade: <strong>@compra.Quantidade</strong>
+            </p>
+          </div>
+          <div class="mt-3 sm:mt-0 text-sm text-gray-600 whitespace-nowrap">
+            <span>Total: 
+              <strong>
+                R$ @(compra.Total
+                      .ToString("F2", 
+                                CultureInfo.GetCultureInfo("pt-BR")))
+              </strong>
+            </span>
+            <span class="mx-2">|</span>
+            <span>
+              @(compra.DataCompra
+                  .ToString("dd/MM/yyyy HH:mm", 
+                            CultureInfo.GetCultureInfo("pt-BR")))
+            </span>
+          </div>
+        </li>
+      }
+    </ul>
+  }
 </div>
 
 @code {
-    private List<CarrinhoHistorico> Historico = new();
+  private List<CarrinhoHistorico>? historico;
 
-    protected override async Task OnInitializedAsync()
-    {
-        Historico = await CarrinhoService.ListarHistoricoAsync(UserState.UserId);
-    }
+  protected override async Task OnInitializedAsync()
+  {
+    historico = await CarrinhoService.ListarHistoricoAsync(UserState.UserId);
+  }
 }

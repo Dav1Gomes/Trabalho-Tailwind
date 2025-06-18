@@ -1,8 +1,11 @@
-namespace ProjetoDelivery.DTOs;
-
-public class CarrinhoHistoricoDTO
+namespace ProjetoDelivery.DTOs
 {
-    public string NomeAlimento { get; set; } = "";
-    public int Quantidade { get; set; }
-    public decimal Total { get; set; }
+    public class CarrinhoHistoricoDTO
+    {
+        public string NomeAlimento     { get; set; } = "";
+        public string NomeRestaurante  { get; set; } = "";
+        public DateTime DataCompra     { get; set; }
+        public int Quantidade          { get; set; }
+        public decimal Total           { get; set; }
+    }
 }

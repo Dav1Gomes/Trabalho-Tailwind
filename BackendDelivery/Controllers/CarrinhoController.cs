@@ -65,9 +65,10 @@ public class CarrinhoController : ControllerBase
     {
         var historico = await _context.HistoricoCompras
             .Include(c => c.Alimento)
+                .ThenInclude(a => a.Restaurante)       
             .Where(c => c.UsuarioId == usuarioId)
-            .OrderByDescending(c => c.DataCompra)
-            .ToListAsync();
+            .OrderByDescending(c => c.DataCompra)      
+            .ToListAsync();                            
 
         return Ok(historico);
     }
