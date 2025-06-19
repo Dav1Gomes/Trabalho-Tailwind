@@ -3,7 +3,6 @@ using BackendDelivery.DTOs;
 using BackendDelivery.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using ProjetoDelivery.DTOs;
 
 namespace BackendDelivery.Controllers;
 
@@ -117,6 +116,46 @@ public class CarrinhoController : ControllerBase
 
         return Ok(itens);
     }
+
+      [HttpGet("maisvendidos")]
+    public async Task<ActionResult<List<MaisVendidoResponseDTO>>> MaisVendidos()
+    {
+        var topList = await _context.HistoricoCompras
+            .GroupBy(c => c.AlimentoId)
+            .Select(g => new {
+                AlimentoId       = g.Key,
+                QuantidadeVendida = g.Sum(x => x.Quantidade)
+            })
+            .OrderByDescending(x => x.QuantidadeVendida)
+            .Take(8)
+            .ToListAsync();
+
+        var alimentos = await _context.Alimentos
+            .Where(a => topList.Select(t => t.AlimentoId).Contains(a.Id))
+            .Include(a => a.Restaurante)
+            .ToListAsync();
+
+        var resultados = topList
+            .Select(t => {
+                var a = alimentos.First(a => a.Id == t.AlimentoId);
+                return new MaisVendidoResponseDTO {
+                    AlimentoId        = a.Id,
+                    Nome              = a.Nome,
+                    Preco             = a.Preco,
+                    Nota              = a.Nota,
+                    TempoPreparo      = a.TempoPreparo,
+                    Tipo              = a.Tipo,
+                    FotoUrl           = a.FotoUrl,
+                    RestauranteNome   = a.Restaurante.Nome,
+                    QuantidadeVendida = t.QuantidadeVendida
+                };
+            })
+            .OrderByDescending(x => x.QuantidadeVendida)
+            .ToList();
+
+        return Ok(resultados);
+    }
+
 
     [HttpDelete("{carrinhoId}")]
     public async Task<IActionResult> RemoverItem(int carrinhoId)

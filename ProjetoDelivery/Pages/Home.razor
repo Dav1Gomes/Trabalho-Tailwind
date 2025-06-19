@@ -6,9 +6,15 @@
 
 <div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white flex flex-col items-center pt-24 px-4 animate-fade-in-up">
     <div class="mb-10 text-center">
-        <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] drop-shadow-lg animate-fade-in-down">
-            Bem-vindo ao <span class="text-green-500">Boxly</span> 🍔
+        <h1 class="flex flex-col sm:flex-row items-center justify-center text-3xl sm:text-5xl font-extrabold text-[#6836c5] drop-shadow-lg animate-fade-in-down">
+        <span class="mr-2">Bem-vindo ao</span>
+        <span class="flex items-center mt-2 sm:mt-0">
+            <span class="text-green-500">Boxly</span>
+            <img src="img/boxlyMin.png" alt="Boxly Logo"
+                class="inline-block w-14 h-14 sm:w-20 sm:h-20 ml-2" />
+        </span>
         </h1>
+
         <p class="text-base sm:text-lg text-black mt-4 max-w-2xl mx-auto">
             Peça sua comida favorita dos melhores restaurantes da cidade com apenas alguns cliques!
         </p>
@@ -36,11 +42,14 @@
 @code {
     private List<Restaurante> Restaurantes = new();
     private List<Restaurante> RestaurantesAleatorios = new();
+
     protected override async Task OnInitializedAsync()
     {
         Restaurantes = await RestauranteService.ListarTodosAsync();
         var random = new Random();
-        RestaurantesAleatorios = Restaurantes.OrderBy(x => random.Next()).Take(4).ToList();
+        RestaurantesAleatorios = Restaurantes
+            .OrderBy(x => random.Next())
+            .Take(4)
+            .ToList();
     }
 }
-

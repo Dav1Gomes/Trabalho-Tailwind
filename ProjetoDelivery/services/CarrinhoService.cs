@@ -85,6 +85,14 @@ public class CarrinhoService
         ) ?? new();
     }
 
+    public async Task<List<MaisVendido>> ListarMaisVendidosAsync()
+    {
+        return await _http
+            .GetFromJsonAsync<List<MaisVendido>>(
+                "http://localhost:5291/api/carrinho/maisvendidos"
+            ) 
+            ?? new();
+    }
 
 
 

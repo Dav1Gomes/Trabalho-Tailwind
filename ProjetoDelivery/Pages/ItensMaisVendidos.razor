@@ -1,34 +1,181 @@
 @page "/itens-mais-vendidos"
+@layout MainLayout
 
-<div class="min-h-screen bg-gradient-to-b from-green-100 via-white to-white pt-24 px-4 sm:px-6 flex flex-col items-center animate-fade-in-up">
-    <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] text-center mb-10 drop-shadow-lg animate-fade-in-down">
-        Itens Mais Vendidos
-    </h1>
+@using ProjetoDelivery.Models
+@using ProjetoDelivery.Services
+@using ProjetoDelivery.Shared
+@using System.Globalization
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6 sm:gap-8 w-full max-w-7xl">
-        @foreach (var item in Itens)
-        {
-            <div class="bg-white rounded-2xl shadow-xl p-6 flex flex-col items-center text-center transform hover:scale-105 transition-all duration-300 border-2 border-green-300 hover:border-[#6836c5]">
-                <h2 class="text-xl sm:text-2xl font-bold text-black mb-2">@item.Nome</h2>
-                <p class="text-green-600 font-semibold mb-1">Preço: R$ @item.Preco</p>
-                <p class="text-green-600 font-semibold">Nota: @item.Nota ⭐</p>
-            </div>
-        }
+@inject CarrinhoService CarrinhoService
+@inject UserStateService UserState
+
+<div class="pt-24 px-4 sm:px-6 md:px-8 bg-gradient-to-b from-green-100 via-white to-white min-h-screen">
+  <h1 class="text-3xl sm:text-5xl font-extrabold text-[#6836c5] text-center mb-10 drop-shadow-lg">
+    Itens Mais Vendidos
+  </h1>
+
+  @if (Itens is null)
+  {
+    <p class="text-gray-500 text-center">Carregando...</p>
+  }
+  else if (!Itens.Any())
+  {
+    <p class="text-gray-500 text-center">Nenhum item encontrado.</p>
+  }
+  else
+  {
+    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      @foreach (var item in Itens)
+      {
+        <div class="bg-white rounded-2xl shadow-lg overflow-hidden transform hover:scale-105 transition">
+          <img src="@item.FotoUrl" alt="@item.Nome" class="w-full h-48 object-cover" />
+          <div class="p-4 flex flex-col space-y-2">
+            <p class="text-xl font-semibold">@item.Nome</p>
+            <p class="text-sm text-gray-600">Restaurante: @item.RestauranteNome</p>
+            <p class="text-green-600 font-semibold">
+              R$ @item.Preco.ToString("F2", CultureInfo.GetCultureInfo("pt-BR"))
+            </p>
+            <p class="text-yellow-500">⭐ @item.Nota</p>
+            <p class="text-gray-700">Tempo: @item.TempoPreparo min</p>
+            <p class="text-gray-700">Tipo: @item.Tipo</p>
+            <p class="text-gray-800 font-medium">
+              Vendidos: @item.QuantidadeVendida
+            </p>
+            <button class="mt-4 bg-[#6836c5] hover:bg-purple-700 text-white font-semibold py-2 rounded"
+                    @onclick="() => AbrirModal(item)">
+              Adicionar ao Carrinho
+            </button>
+          </div>
+        </div>
+      }
     </div>
+  }
 </div>
 
-@code {
-    private List<Item> Itens = new()
-    {
-        new Item { Nome = "X-Burger", Preco = 20.00, Nota = 4.5 },
-        new Item { Nome = "Pizza de Calabresa", Preco = 35.00, Nota = 4.8 },
-        new Item { Nome = "Sushi Combo", Preco = 50.00, Nota = 4.3 }
-    };
+@if (ShowLoginToast)
+{
+  <Toast Mensagem="Você precisa fazer login primeiro." />
+}
+@if (ShowAddToast)
+{
+  <Toast Mensagem="@($"{ToastNome} x{ToastQuantidade} adicionado! Total: R$ {ToastTotal.ToString("F2", CultureInfo.GetCultureInfo("pt-BR"))}")" />
+}
 
-    private class Item
+@if (ItemSelecionado != null && !ShowLoginToast)
+{
+  <div class="fixed inset-0 flex justify-center items-center backdrop-blur-md z-50 animate-fade-in-up">
+    <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-2xl w-11/12 max-w-md flex flex-col items-center">
+      <h2 class="text-xl sm:text-2xl font-bold text-center text-black mb-4">
+        @ItemSelecionado.Nome
+      </h2>
+      <p class="text-[#6836c5] mb-2 text-center">
+        Preço: R$ @ItemSelecionado.Preco.ToString("F2", CultureInfo.GetCultureInfo("pt-BR"))
+      </p>
+      <p class="text-[#6836c5] mb-2 text-center">
+        Tempo de preparo: @ItemSelecionado.TempoPreparo minutos
+      </p>
+      <p class="text-[#6836c5] mb-4 text-center">
+        Nota: @ItemSelecionado.Nota ⭐
+      </p>
+
+      <div class="flex items-center justify-center space-x-6 mb-6">
+        <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full text-xl"
+                @onclick="DiminuirQuantidade">➖</button>
+
+        <span class="text-black font-semibold text-2xl">@Quantidade</span>
+
+        <button class="bg-[#6836c5] hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-full text-xl"
+                @onclick="AumentarQuantidade">➕</button>
+      </div>
+
+      <button class="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-2 rounded-xl mb-3 transform hover:scale-105 transition-transform"
+              @onclick="ConfirmarCompra">
+        Confirmar Compra
+      </button>
+      <button class="w-full bg-red-500 hover:bg-red-600 text-white font-semibold py-2 rounded-xl transform hover:scale-105 transition-transform"
+              @onclick="FecharModal">
+        Fechar
+      </button>
+    </div>
+  </div>
+}
+
+@code {
+  private List<MaisVendido>? Itens;
+  private MaisVendido? ItemSelecionado;
+  private int Quantidade = 1;
+
+  private bool ShowLoginToast = false;
+  private bool ShowAddToast = false;
+  private string ToastNome = string.Empty;
+  private int ToastQuantidade;
+  private decimal ToastTotal;
+
+  protected override async Task OnInitializedAsync()
+    => Itens = await CarrinhoService.ListarMaisVendidosAsync();
+
+  void AbrirModal(MaisVendido item)
+  {
+    ItemSelecionado = item;
+    Quantidade = 1;
+
+    if (UserState.UserId == 0)
     {
-        public string Nome { get; set; } = string.Empty;
-        public double Preco { get; set; }
-        public double Nota { get; set; }
+      ShowLoginToast = true;
+      _ = HideLoginToastAsync();
     }
+  }
+
+  void FecharModal()
+  {
+    ItemSelecionado = null;
+  }
+
+  void DiminuirQuantidade()
+  {
+    if (Quantidade > 1)
+      Quantidade--;
+  }
+
+  void AumentarQuantidade()
+  {
+    Quantidade++;
+  }
+
+  async Task ConfirmarCompra()
+  {
+    if (ItemSelecionado is null || UserState.UserId == 0)
+      return;
+
+    var (sucesso, novaQtd, total) = await CarrinhoService.ComprarAsync(
+      UserState.UserId,
+      ItemSelecionado.AlimentoId,
+      Quantidade
+    );
+
+    if (sucesso)
+    {
+      ToastNome = ItemSelecionado.Nome;
+      ToastQuantidade = novaQtd;
+      ToastTotal = total;
+      ShowAddToast = true;
+      _ = HideAddToastAsync();
+    }
+
+    FecharModal();
+  }
+
+  async Task HideLoginToastAsync()
+  {
+    await Task.Delay(3000);
+    ShowLoginToast = false;
+    StateHasChanged();
+  }
+
+  async Task HideAddToastAsync()
+  {
+    await Task.Delay(3000);
+    ShowAddToast = false;
+    StateHasChanged();
+  }
 }
